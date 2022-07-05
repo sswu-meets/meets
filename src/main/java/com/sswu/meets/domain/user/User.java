@@ -15,19 +15,19 @@ public class User {
 
     @Id // 테이블의 PK 필드를 나타냄
     @GeneratedValue(strategy = GenerationType.IDENTITY) // PK의 생성 규칙
-    private Long id;
+    private Long user_no;
 
     private String email;
 
-    private String nickname;
+    private String name;
 
-    private String password;
+    private String profile_url;
 
     @Builder
-    public User(String email, String nickname, String password) {
+    public User(String email, String name, String profile_url) {
         this.email = email;
-        this.nickname = nickname;
-        this.password = password;
+        this.name = name;
+        this.profile_url = profile_url;
     }
 
 

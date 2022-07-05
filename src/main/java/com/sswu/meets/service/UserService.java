@@ -17,7 +17,7 @@ public class UserService {
 
     @Transactional
     public Long save(UserSaveRequestDto userSaveRequestDto) {
-        return userRepository.save(userSaveRequestDto.toEntity()).getId();
+        return userRepository.save(userSaveRequestDto.toEntity()).getUser_no();
     }
 
     // 결과로 넘어온 User의 Stream을 map을 통해 UserResponseDto 변환, 그 후 List로 반환
