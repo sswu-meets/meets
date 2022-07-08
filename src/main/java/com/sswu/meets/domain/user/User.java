@@ -30,5 +30,4 @@ public class User {
         this.profile_url = profile_url;
     }
 
-
 }

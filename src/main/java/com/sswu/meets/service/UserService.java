@@ -3,6 +3,7 @@ package com.sswu.meets.service;
 import com.sswu.meets.domain.user.UserRepository;
 import com.sswu.meets.dto.UserResponseDto;
 import com.sswu.meets.dto.UserSaveRequestDto;
+import com.sswu.meets.dto.UserUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,5 +28,15 @@ public class UserService {
         return userRepository.findAll().stream()
                 .map(UserResponseDto::new)
                 .collect(Collectors.toList());
+    }
+
+    public Boolean update(UserUpdateRequestDto userUpdateRequestDto) {
+        try{
+            userRepository.save(userUpdateRequestDto.toEntity());
+            return true;
+        }catch (IllegalArgumentException e){
+            System.out.println("error: " + e);
+            return false;
+        }
     }
 }
