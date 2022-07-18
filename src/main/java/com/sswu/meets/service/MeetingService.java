@@ -24,8 +24,6 @@ public class MeetingService {
     private final ParticipationRepository participationRepository;
     private final UserRepository userRepository;
 
-    // 모임 조회
-
     // 유저가 참여하고 있는 모임 조회
     @Transactional
     public List<MeetingResponseDto> getMeetingList(Long user_no) {
@@ -41,6 +39,8 @@ public class MeetingService {
     @Transactional
     public List<UserResponseDto> getUserListOfMeeting(Long meeting_no) {
         Meeting participationMeeting = meetingRepository.getById(meeting_no);
+
+        System.out.println("참여하고 있는 모임: " + participationMeeting.getName());
 
         return participationRepository.findParticipationByMeeting(participationMeeting).stream()
                 .map(p -> p.getUser())
@@ -78,11 +78,15 @@ public class MeetingService {
         User participationUser = userRepository.getById(user_no);
         Meeting participationMeeting = meetingRepository.findByMeetingCode(meetingCode);
 
-        Participation participation = Participation.builder()
-                .meeting(participationMeeting)
-                .user(participationUser)
-                .build();
-        participationRepository.save(participation);
+        if (participationRepository.findParticipationByUserAndMeeting(participationUser, participationMeeting) != null) {
+            Participation participation = Participation.builder()
+                    .meeting(participationMeeting)
+                    .user(participationUser)
+                    .build();
+            participationRepository.save(participation);
+
+        }
+
 
         return new MeetingResponseDto(participationMeeting);
     }
@@ -93,10 +97,8 @@ public class MeetingService {
         User participationUser = userRepository.getById(user_no);
         Meeting participationMeeting = meetingRepository.findByMeetingCode(meetingCode);
 
-        Participation participation = Participation.builder()
-                .meeting(participationMeeting)
-                .user(participationUser)
-                .build();
+        Participation participation = participationRepository.findParticipationByUserAndMeeting(participationUser, participationMeeting);
+
         try {
             participationRepository.delete(participation);
             return true;
