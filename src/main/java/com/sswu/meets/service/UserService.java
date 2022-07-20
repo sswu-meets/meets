@@ -37,13 +37,9 @@ public class UserService {
     }
 
     @Transactional
-    public Boolean update(Long user_no, UserUpdateRequestDto userSaveRequestDto) {
+    public boolean update(Long user_no, UserUpdateRequestDto userSaveRequestDto) {
         try{
-            User user = userRepository.getById(user_no);
-            //이 부분에서 원래 toEntity()를 사용
-            user.update(userSaveRequestDto.getEmail()
-                ,userSaveRequestDto.getName()
-                ,userSaveRequestDto.getProfile_url());
+            userRepository.save(userSaveRequestDto.toEntity());
             return true;
         }catch (IllegalArgumentException e){
             System.out.println("error: " + e);
@@ -52,7 +48,7 @@ public class UserService {
     }
 
     @Transactional
-    public Boolean deleteUser(Long user_no) {
+    public boolean deleteUser(Long user_no) {
         User user = userRepository.getById(user_no);  //getById:프록시만 반환
         try {
             userRepository.delete(user);
@@ -62,6 +58,4 @@ public class UserService {
             return false;
         }
     }
-
-
 }
