@@ -1,5 +1,6 @@
 package com.sswu.meets.service;
 
+import com.sswu.meets.domain.user.User;
 import com.sswu.meets.domain.user.UserRepository;
 import com.sswu.meets.dto.UserResponseDto;
 import com.sswu.meets.dto.UserSaveRequestDto;
@@ -30,11 +31,24 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public Boolean update(UserUpdateRequestDto userUpdateRequestDto) {
+    @Transactional
+    public boolean update(Long user_no, UserUpdateRequestDto userSaveRequestDto) {
         try{
-            userRepository.save(userUpdateRequestDto.toEntity());
+            userRepository.save(userSaveRequestDto.toEntity());
             return true;
         }catch (IllegalArgumentException e){
+            System.out.println("error: " + e);
+            return false;
+        }
+    }
+
+    @Transactional
+    public boolean deleteUser(Long user_no) {
+        User user = userRepository.getById(user_no);  //getById:프록시만 반환
+        try {
+            userRepository.delete(user);
+            return true;
+        } catch (Exception e) {
             System.out.println("error: " + e);
             return false;
         }

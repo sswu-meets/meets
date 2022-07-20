@@ -33,7 +33,7 @@ public class UserController {
 
     // 유저 정보 수정
     @PutMapping("/user/{user_no}")
-    public Boolean update(@PathVariable Long user_no, @RequestBody UserUpdateRequestDto userSaveRequestDto){
+    public boolean update(@PathVariable Long user_no, @RequestBody UserUpdateRequestDto userSaveRequestDto){
         return userService.update(user_no, userSaveRequestDto);
     }
 
