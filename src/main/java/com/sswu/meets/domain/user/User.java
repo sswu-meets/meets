@@ -29,5 +29,10 @@ public class User {
         this.name = name;
         this.profile_url = profile_url;
     }
-
+    
+    public void update(String email, String name, String profile_url) {
+        this.email = email;
+        this.name = name;
+        this.profile_url = profile_url;
+    }
 }

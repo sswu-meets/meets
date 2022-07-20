@@ -1,6 +1,9 @@
 package com.sswu.meets.service;
 
+import com.sswu.meets.domain.schedule.Schedule;
+import com.sswu.meets.domain.user.User;
 import com.sswu.meets.domain.user.UserRepository;
+import com.sswu.meets.dto.ScheduleUpdateRequestDto;
 import com.sswu.meets.dto.UserResponseDto;
 import com.sswu.meets.dto.UserSaveRequestDto;
 import com.sswu.meets.dto.UserUpdateRequestDto;
@@ -9,12 +12,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    //private final MeetingRepository meetingRepository;
+    //private final ParticipationRepository participationRepository;
 
     @Transactional
     public Long save(UserSaveRequestDto userSaveRequestDto) {
@@ -30,13 +36,32 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public Boolean update(UserUpdateRequestDto userUpdateRequestDto) {
+    @Transactional
+    public Boolean update(Long user_no, UserUpdateRequestDto userSaveRequestDto) {
         try{
-            userRepository.save(userUpdateRequestDto.toEntity());
+            User user = userRepository.getById(user_no);
+            //이 부분에서 원래 toEntity()를 사용
+            user.update(userSaveRequestDto.getEmail()
+                ,userSaveRequestDto.getName()
+                ,userSaveRequestDto.getProfile_url());
             return true;
         }catch (IllegalArgumentException e){
             System.out.println("error: " + e);
             return false;
         }
     }
+
+    @Transactional
+    public Boolean deleteUser(Long user_no) {
+        User user = userRepository.getById(user_no);  //getById:프록시만 반환
+        try {
+            userRepository.delete(user);
+            return true;
+        } catch (Exception e) {
+            System.out.println("error: " + e);
+            return false;
+        }
+    }
+
+
 }
