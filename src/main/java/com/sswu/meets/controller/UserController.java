@@ -19,6 +19,11 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
+    @GetMapping("/")
+    public String hello() {
+        return "meets에 오신 걸 환영합니다:)";
+    }
+
     // 유저 등록
     @PostMapping("/user")
     public Long save(@RequestBody UserSaveRequestDto userSaveRequestDto) {
