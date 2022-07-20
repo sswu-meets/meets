@@ -1,14 +1,17 @@
 package com.sswu.meets.controller;
 
+import com.sswu.meets.domain.user.User;
+import com.sswu.meets.dto.ScheduleUpdateRequestDto;
 import com.sswu.meets.dto.UserResponseDto;
 import com.sswu.meets.dto.UserSaveRequestDto;
+import com.sswu.meets.dto.UserUpdateRequestDto;
 import com.sswu.meets.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.filter.HiddenHttpMethodFilter;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -31,5 +34,17 @@ public class UserController {
     @GetMapping("/user")
     public List<UserResponseDto> getUserList() {
         return userService.getUserList();
+    }
+
+    // 유저 정보 수정
+    @PutMapping("/user/{user_no}")
+    public Boolean update(@PathVariable Long user_no, @RequestBody UserUpdateRequestDto userSaveRequestDto){
+        return userService.update(user_no, userSaveRequestDto);
+    }
+
+    // 유저 정보 삭제
+    @DeleteMapping("/user/{user_no}")
+    public boolean deleteUser(@PathVariable Long user_no) {
+        return userService.deleteUser(user_no);
     }
 }
