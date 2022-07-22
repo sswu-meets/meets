@@ -1,5 +1,7 @@
 package com.sswu.meets.service;
 
+import com.sswu.meets.domain.meeting.Meeting;
+import com.sswu.meets.domain.meeting.MeetingRepository;
 import com.sswu.meets.domain.schedule.Schedule;
 import com.sswu.meets.domain.schedule.ScheduleRepository;
 import com.sswu.meets.domain.user.User;
@@ -15,12 +17,14 @@ import java.util.stream.Collectors;
 @Service
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
+    private final MeetingRepository meetingRepository;
 
     //일정 등록
     @Transactional
-    public Long save(ScheduleSaveRequestDto scheduleSaveRequestDto) {
-        return scheduleRepository.save(scheduleSaveRequestDto.toEntity())
-                .getSchedule_no();
+    public Long save(Long meetingNo, ScheduleSaveRequestDto scheduleSaveRequestDto) {
+        Meeting meeting = meetingRepository.getById(meetingNo);
+
+        return scheduleRepository.save(scheduleSaveRequestDto.toEntity(meeting)).getNo();
     }
 
     //일정 조회
@@ -34,11 +38,11 @@ public class ScheduleService {
 
     //일정 수정
     @Transactional
-    public Boolean update(Long schedule_no, ScheduleUpdateRequestDto requestDto) {
+    public Boolean update(Long schedule_no, ScheduleUpdateRequestDto scheduleUpdateRequestDto) {
         Schedule schedule = scheduleRepository.getById(schedule_no);
         try {
-            schedule.update(requestDto.getSchedule_name(), requestDto.getDate_tune(),
-                    requestDto.getTime_tune(), requestDto.getSchedule_memo());
+            schedule = scheduleUpdateRequestDto.toEntity();
+            scheduleRepository.save(schedule);
             return true;
         } catch (IllegalArgumentException e) {
             System.out.println("error: " + e);

@@ -17,15 +17,15 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     //일정 등록
-    @PostMapping("/schedule")
-    public Long save(@RequestBody ScheduleSaveRequestDto scheduleSaveRequestDto) {
-        return scheduleService.save(scheduleSaveRequestDto);
+    @PostMapping("/schedule/{meetingNo}")
+    public Long save(@PathVariable Long meetingNo, @RequestBody ScheduleSaveRequestDto scheduleSaveRequestDto) {
+        return scheduleService.save(meetingNo, scheduleSaveRequestDto);
     }
 
     //일정 수정
-    @PutMapping("/schedule/{schedule_no}")
-    public Boolean update(@PathVariable Long schedule_no, @RequestBody ScheduleUpdateRequestDto requestDto) {
-        return scheduleService.update(schedule_no, requestDto);
+    @PutMapping("/schedule/{scheduleNo}")
+    public Boolean update(@PathVariable Long scheduleNo, @RequestBody ScheduleUpdateRequestDto requestDto) {
+        return scheduleService.update(scheduleNo, requestDto);
     }
 
     //일정 조회

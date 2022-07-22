@@ -1,7 +1,8 @@
 package com.sswu.meets.dto;
 
+import com.sswu.meets.domain.meeting.Meeting;
+import com.sswu.meets.domain.schedule.DateTuneState;
 import com.sswu.meets.domain.schedule.Schedule;
-import com.sswu.meets.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,26 +10,24 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class ScheduleSaveRequestDto {
-    public Object getTitle;
-    private String schedule_name;
-    private Boolean date_tune;
-    private Boolean time_tune;
-    private String schedule_memo;
+    private String scheduleName;
+    private DateTuneState dateTuneState;
+    private Boolean placeTuneState;
 
     @Builder
-    public ScheduleSaveRequestDto(String schedule_name, Boolean date_tune, Boolean time_tune, String schedule_memo) {
-        this.schedule_name = schedule_name;
-        this.date_tune = date_tune;
-        this.time_tune = time_tune;
-        this.schedule_memo = schedule_memo;
+    public ScheduleSaveRequestDto(String scheduleName, DateTuneState dateTuneState, Boolean placeTuneState) {
+        this.scheduleName = scheduleName;
+        this.dateTuneState = dateTuneState;
+        this.placeTuneState = placeTuneState;
     }
 
-    public Schedule toEntity(){
+    public Schedule toEntity(Meeting meeting) {
+        System.out.println("ScheduleSaveRequestDto.toEntity()");
         return Schedule.builder()
-                .schedule_name(schedule_name)
-                .date_tune(date_tune)
-                .time_tune(time_tune)
-                .schedule_memo(schedule_memo)
+                .meeting(meeting)
+                .scheduleName(scheduleName)
+                .dateTuneState(dateTuneState)
+                .placeTuneState(placeTuneState)
                 .build();
     }
 

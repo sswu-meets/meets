@@ -1,5 +1,7 @@
 package com.sswu.meets.domain.schedule;
 
+import com.sswu.meets.domain.meeting.Meeting;
+import com.sswu.meets.domain.user.Role;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,25 +14,33 @@ public class Schedule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long schedule_no;
+    private Long no;
 
-    private String schedule_name;    //일정 이름
-    private Boolean date_tune;   //일정 날짜 조정 여부 Y or N
-    private Boolean time_tune;   //일정 시간 조정 여부 Y or N
-    private String schedule_memo;    //일정 메모
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "meeting_no")
+    private Meeting meeting;
+
+    private String scheduleName;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private DateTuneState dateTuneState;   //일정 날짜&시간 조정 여부 'FIX' or 'DATES' or 'WEEKS'
+
+    @Column
+    private Boolean placeTuneState;   //일정 장소 조정 여부 true or false
+
 
     @Builder
-    public Schedule(String schedule_name, Boolean date_tune, Boolean time_tune, String schedule_memo) {
-        this.schedule_name = schedule_name;
-        this.date_tune = date_tune;
-        this.time_tune = time_tune;
-        this.schedule_memo = schedule_memo;
+    public Schedule(Meeting meeting, String scheduleName, DateTuneState dateTuneState, Boolean placeTuneState) {
+        this.meeting = meeting;
+        this.scheduleName = scheduleName;
+        this.dateTuneState = dateTuneState;
+        this.placeTuneState = placeTuneState;
     }
 
-    public void update(String schedule_name, Boolean date_tune, Boolean time_tune, String schedule_memo) {
-        this.schedule_name = schedule_name;
-        this.date_tune = date_tune;
-        this.time_tune = time_tune;
-        this.schedule_memo = schedule_memo;
+    public Schedule update(String scheduleName) {
+        this.scheduleName = scheduleName;
+
+        return this;
     }
 }
