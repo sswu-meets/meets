@@ -73,9 +73,9 @@ public class UserController {
 
     // 로그아웃
     @GetMapping("/user/logout")
-    public String logout() {
+    public void logout(HttpServletResponse httpServletResponse) throws IOException {
         httpSession.invalidate();
-        return "redirect:/";
+        httpServletResponse.sendRedirect("/");
     }
 
     // 로그인 유무
