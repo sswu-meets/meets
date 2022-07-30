@@ -19,7 +19,7 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final MeetingRepository meetingRepository;
 
-    //일정 등록
+    // 일정 등록
     @Transactional
     public Long save(Long meetingNo, ScheduleSaveRequestDto scheduleSaveRequestDto) {
         Meeting meeting = meetingRepository.getById(meetingNo);
@@ -27,38 +27,35 @@ public class ScheduleService {
         return scheduleRepository.save(scheduleSaveRequestDto.toEntity(meeting)).getNo();
     }
 
-    //일정 조회
+    // 일정 조회
     @Transactional
-    public List<ScheduleResponseDto> getScheduleList() {
-        System.out.println(scheduleRepository.findAll());
-        return scheduleRepository.findAll().stream()
+    public List<ScheduleResponseDto> getScheduleList(Long meetingNo) {
+        Meeting meeting = meetingRepository.getById(meetingNo);
+
+        return scheduleRepository.findByMeeting(meeting).stream()
                 .map(ScheduleResponseDto::new)
                 .collect(Collectors.toList());
     }
 
-    //일정 수정
+    // 일정 수정
     @Transactional
-    public Boolean update(Long schedule_no, ScheduleUpdateRequestDto scheduleUpdateRequestDto) {
-        Schedule schedule = scheduleRepository.getById(schedule_no);
-        try {
-            schedule = scheduleUpdateRequestDto.toEntity();
-            scheduleRepository.save(schedule);
-            return true;
-        } catch (IllegalArgumentException e) {
-            System.out.println("error: " + e);
-            return false;
-        }
+    public Boolean update(Long scheduleNo, ScheduleUpdateRequestDto scheduleUpdateRequestDto) {
+        Schedule schedule = scheduleRepository.findById(scheduleNo)
+                .orElseThrow(() -> new IllegalArgumentException("해당 일정이 없습니다. scheduleNo=" + scheduleNo));
+        schedule.update(scheduleUpdateRequestDto.getScheduleName());
+
+        return true;
     }
+
+    // 일정 삭제
+    public Boolean delete(Long scheduleNo) {
+        Schedule schedule = scheduleRepository.findById(scheduleNo)
+                .orElseThrow(() -> new IllegalArgumentException("해당 일정 없습니다. scheduleNo=" + scheduleNo));
+        scheduleRepository.delete(schedule);
+
+        return true;
+    }
+
 }
 
-//    public Long update(Long schedule_no, ScheduleUpdateRequestDto requestDto) {
-//        Schedule schedule = scheduleRepository.findById(schedule_no)
-//                .orElseThrow(() -> new
-//                IllegalArgumentException("해당 게시글이 없습니다. id=" + schedule_no));
-//
-//        schedule.update(requestDto.getSchedule_name(), requestDto.getDate_tune(),
-//                requestDto.getTime_tune(), requestDto.getSchedule_memo());
-//
-//        return schedule_no;
-//    }
 
