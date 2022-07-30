@@ -12,7 +12,7 @@ public class ScheduleResponseDto {
     private Boolean placeTuneState;
 
     public ScheduleResponseDto(Schedule entity){
-        this.no = entity.getNo();
+        this.no = entity.getScheduleNo();
         this.meetingNo = entity.getMeeting().getMeeting_no();
         this.scheduleName = entity.getScheduleName();
         this.dateTuneState = entity.getDateTuneState();

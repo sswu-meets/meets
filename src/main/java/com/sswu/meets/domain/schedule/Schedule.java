@@ -13,7 +13,7 @@ public class Schedule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long no;
+    private Long scheduleNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "meeting_no")
