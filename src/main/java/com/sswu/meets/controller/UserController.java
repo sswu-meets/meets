@@ -77,9 +77,9 @@ public class UserController {
 
     @ApiOperation(value = "로그아웃", notes = "로그아웃 후 홈 페이지로 이동")
     @GetMapping("/user/logout")
-    public String logout() {
+    public void logout(HttpServletResponse httpServletResponse) throws IOException {
         httpSession.invalidate();
-        return "redirect:/";
+        httpServletResponse.sendRedirect("/");
     }
 
     @ApiOperation(value = "로그인 유무", notes = "로그인 한 경우, true 반환 | 로그인 하지 않은 경우, false 반환")

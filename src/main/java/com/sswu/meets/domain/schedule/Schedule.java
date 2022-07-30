@@ -1,7 +1,6 @@
 package com.sswu.meets.domain.schedule;
 
 import com.sswu.meets.domain.meeting.Meeting;
-import com.sswu.meets.domain.user.Role;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,16 +21,13 @@ public class Schedule {
 
     private String scheduleName;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private DateTuneState dateTuneState;   //일정 날짜&시간 조정 여부 'FIX' or 'DATES' or 'WEEKS'
+    private Boolean dateTuneState;   // 조율 -> true, 고정 -> false
 
-    @Column
-    private Boolean placeTuneState;   //일정 장소 조정 여부 true or false
+    private Boolean placeTuneState;   // 일정 장소 조정 여부 true or false
 
 
     @Builder
-    public Schedule(Meeting meeting, String scheduleName, DateTuneState dateTuneState, Boolean placeTuneState) {
+    public Schedule(Meeting meeting, String scheduleName, Boolean dateTuneState, Boolean placeTuneState) {
         this.meeting = meeting;
         this.scheduleName = scheduleName;
         this.dateTuneState = dateTuneState;
