@@ -24,7 +24,7 @@ public class ScheduleService {
     public Long save(Long meetingNo, ScheduleSaveRequestDto scheduleSaveRequestDto) {
         Meeting meeting = meetingRepository.getById(meetingNo);
 
-        return scheduleRepository.save(scheduleSaveRequestDto.toEntity(meeting)).getNo();
+        return scheduleRepository.save(scheduleSaveRequestDto.toEntity(meeting)).getScheduleNo();
     }
 
     // 일정 조회
