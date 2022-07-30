@@ -9,18 +9,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MeetingSaveRequestDto {
     private String name;
-    private String meetingCode;
+    private String meetingColor;
 
     @Builder
-    public MeetingSaveRequestDto(String name, String meetingCode) {
+    public MeetingSaveRequestDto(String name, String meetingColor) {
         this.name = name;
-        this.meetingCode = meetingCode;
+        this.meetingColor = meetingColor;
     }
 
-    public Meeting toEntity() {
+    public Meeting toEntity(String meetingCode) {
         return Meeting.builder()
                 .name(name)
                 .meetingCode(meetingCode)
+                .meetingColor(meetingColor)
                 .build();
     }
 }
