@@ -18,7 +18,7 @@ public class Todo {
     private Long todoNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "no")
+    @JoinColumn(name = "schedule_no")
     private Schedule schedule;
 
     private String todoContent;     // 투두 내용

@@ -14,8 +14,8 @@ public class TodoController {
     private final TodoService todoService;
 
     // 투두 리스트 등록
-    @PostMapping("/todo/{no}")
-    public Long save(@PathVariable Long no, @RequestBody TodoSaveRequestDto requestDto) {
-        return todoService.save(no,requestDto);
+    @PostMapping("/todo/{scheduleNo}")
+    public Long save(@PathVariable Long scheduleNo, @RequestBody TodoSaveRequestDto requestDto) {
+        return todoService.save(scheduleNo,requestDto);
     }
 }

@@ -15,8 +15,8 @@ public class TodoService {
     private final ScheduleRepository scheduleRepository;
 
     @Transactional
-    public Long save(Long no, TodoSaveRequestDto requestDto) {
-        Schedule schedule = scheduleRepository.getById(no);
+    public Long save(Long scheduleNo, TodoSaveRequestDto requestDto) {
+        Schedule schedule = scheduleRepository.getById(scheduleNo);
         return todoRepository.save(requestDto.toEntity(schedule)).getTodoNo();
     }
 }
