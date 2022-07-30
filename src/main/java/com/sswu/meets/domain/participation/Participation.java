@@ -18,7 +18,7 @@ public class Participation implements Serializable {
 
     @Id // 테이블의 PK 필드를 나타냄
     @GeneratedValue(strategy = GenerationType.IDENTITY) // PK의 생성 규칙
-    private Long id;
+    private Long no;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_no")
