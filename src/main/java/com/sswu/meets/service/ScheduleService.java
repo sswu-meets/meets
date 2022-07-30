@@ -4,7 +4,6 @@ import com.sswu.meets.domain.meeting.Meeting;
 import com.sswu.meets.domain.meeting.MeetingRepository;
 import com.sswu.meets.domain.schedule.Schedule;
 import com.sswu.meets.domain.schedule.ScheduleRepository;
-import com.sswu.meets.domain.user.User;
 import com.sswu.meets.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,13 +17,20 @@ import java.util.stream.Collectors;
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final MeetingRepository meetingRepository;
+    private final ScheduleDateTuneService scheduleDateTuneService;
 
     // 일정 등록
     @Transactional
     public Long save(Long meetingNo, ScheduleSaveRequestDto scheduleSaveRequestDto) {
         Meeting meeting = meetingRepository.getById(meetingNo);
 
-        return scheduleRepository.save(scheduleSaveRequestDto.toEntity(meeting)).getNo();
+        Long scheduleNo = scheduleRepository.save(scheduleSaveRequestDto.toEntity(meeting)).getScheduleNo();
+
+        ScheduleDateTuneSaveRequestDto dateTuneSaveRequestDto = scheduleSaveRequestDto.changeFormat();
+
+        scheduleDateTuneService.saveDateTune(scheduleNo, dateTuneSaveRequestDto);
+
+        return scheduleNo;
     }
 
     // 일정 조회
