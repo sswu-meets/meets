@@ -63,7 +63,7 @@ public class UserController {
         return userService.update(user_no, userSaveRequestDto);
     }
 
-    @ApiOperation(value = "유저 정보 삭제")
+    @ApiOperation(value = "탈퇴하기")
     @DeleteMapping("/user/{user_no}")
     public boolean deleteUser(@PathVariable Long user_no) {
         return userService.deleteUser(user_no);

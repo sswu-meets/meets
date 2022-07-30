@@ -53,12 +53,7 @@ public class MeetingService {
     public Long saveMeeting(Long user_no, MeetingSaveRequestDto requestDto) {
         String meetingCode = createMeetingCode();
 
-        requestDto = requestDto.builder()
-                .name(requestDto.getName())
-                .meetingCode(meetingCode)
-                .build();
-
-        Long meeting_no = meetingRepository.save(requestDto.toEntity()).getMeeting_no();
+        Long meeting_no = meetingRepository.save(requestDto.toEntity(meetingCode)).getMeeting_no();
 
         User participationUser = userRepository.getById(user_no);
         Meeting participationMeeting = meetingRepository.getById(meeting_no);

@@ -16,10 +16,12 @@ public class MeetingResponseDto {
 
     @ApiModelProperty(example = "3LB58f7MkS")
     private String meetingCode;
+    private String meetingColor;
 
     public MeetingResponseDto(Meeting meetingEntity) {
         this.meeting_no = meetingEntity.getMeeting_no();
         this.name = meetingEntity.getName();
         this.meetingCode = meetingEntity.getMeetingCode();
+        this.meetingColor = meetingEntity.getMeetingColor();
     }
 }
