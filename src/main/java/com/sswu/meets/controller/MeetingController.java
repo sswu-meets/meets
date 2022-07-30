@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api(tags = {"모임 관련 API"})
+@Api(tags = "모임")
 @RequiredArgsConstructor
 @RestController
 public class MeetingController {
@@ -26,7 +26,6 @@ public class MeetingController {
         return meetingService.getUserListOfMeeting(meeting_no);
     }
 
-    // 모임 등록
     @ApiOperation(value = "모임 등록")
     @PostMapping("/meeting/{user_no}")
     @ApiImplicitParam(name = "user_no", value = "유저 아이디(고유 식별 번호)", required = true)
@@ -34,7 +33,6 @@ public class MeetingController {
         return meetingService.saveMeeting(user_no, requestDto);
     }
 
-    // 모임 참여
     @ApiOperation(value = "모임 참여")
     @PostMapping("/meeting/{user_no}/{meetingCode}")
     @ApiImplicitParams({
@@ -45,7 +43,6 @@ public class MeetingController {
         return meetingService.participateMeeting(user_no, meetingCode);
     }
 
-    // 모임 나가기
     @ApiOperation(value = "모임 나가기")
     @DeleteMapping("/meeting/{user_no}/{meetingCode}")
     @ApiImplicitParams({
