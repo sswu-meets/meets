@@ -1,10 +1,12 @@
 package com.sswu.meets.domain.todo;
 
+import com.mysql.cj.protocol.ColumnDefinition;
 import com.sswu.meets.domain.schedule.Schedule;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 
@@ -12,6 +14,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@DynamicInsert
 public class Todo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +26,7 @@ public class Todo {
 
     private String todoContent;     // 투두 내용
 
+    @Column(columnDefinition = "Boolean default false")
     private Boolean todoStatus;     // 실행 여부
 
     @Builder
