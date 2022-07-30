@@ -11,10 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 public class ScheduleDateTuneController {
+    private final ScheduleDateTuneService scheduleDateTuneService;
 
-//    // 일정 날짜 조율 등록
-//   @PostMapping("/scheduleDateTune/{no}")
-//    public Long saveDateTune(@PathVariable Long no, @RequestBody ScheduleDateTuneSaveRequestDto requestDto) {
-//        return ScheduleDateTuneService.saveDateTune(no, requestDto);
-//    }
+    // 일정 날짜 조율 등록
+   @PostMapping("/scheduleDateTune/{scheduleNo}")
+    public Long saveDateTune(@PathVariable Long scheduleNo, @RequestBody ScheduleDateTuneSaveRequestDto requestDto) {
+        return scheduleDateTuneService.saveDateTune(scheduleNo, requestDto);
+    }
 }

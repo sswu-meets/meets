@@ -4,6 +4,7 @@ import com.sswu.meets.domain.schedule.Schedule;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.apache.tomcat.jni.Local;
 
 import javax.persistence.*;
@@ -12,7 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Getter
-@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class ScheduleDateTune {
     @Id
@@ -20,7 +21,7 @@ public class ScheduleDateTune {
     private Long scheduleDateTuneNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "no")
+    @JoinColumn(name = "schedule_no")
     private Schedule schedule;
 
     private LocalDate startDate;        // java.time 클래스의 LocalDate, LocalTime
