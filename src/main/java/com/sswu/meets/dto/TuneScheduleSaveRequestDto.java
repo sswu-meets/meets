@@ -6,17 +6,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.sql.Time;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 @Getter
 @NoArgsConstructor
-public class ScheduleSaveRequestDto {
+public class TuneScheduleSaveRequestDto {
     private String scheduleName;
-    private Boolean dateTuneState;
     private Boolean placeTuneState;
     private String startDate;
     private String endDate;
@@ -24,9 +21,8 @@ public class ScheduleSaveRequestDto {
     private String endTime;
 
     @Builder
-    public ScheduleSaveRequestDto(String scheduleName, Boolean dateTuneState, Boolean placeTuneState, String startDate, String endDate, String startTime, String endTime) {
+    public TuneScheduleSaveRequestDto(String scheduleName,Boolean placeTuneState, String startDate, String endDate, String startTime, String endTime) {
         this.scheduleName = scheduleName;
-        this.dateTuneState = dateTuneState;
         this.placeTuneState = placeTuneState;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -39,7 +35,7 @@ public class ScheduleSaveRequestDto {
         return Schedule.builder()
                 .meeting(meeting)
                 .scheduleName(scheduleName)
-                .dateTuneState(dateTuneState)
+                .dateTuneState(true)
                 .placeTuneState(placeTuneState)
                 .build();
     }
