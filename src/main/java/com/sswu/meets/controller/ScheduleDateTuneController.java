@@ -16,8 +16,8 @@ public class ScheduleDateTuneController {
     private final ScheduleDateTuneService scheduleDateTuneService;
 
     // 일정 날짜 조율 등록
-   @PostMapping("/scheduleDateTune/{scheduleNo}")
-    public Long saveDateTune(@PathVariable Long scheduleNo, @RequestBody ScheduleDateTuneSaveRequestDto requestDto) {
-        return scheduleDateTuneService.saveDateTune(scheduleNo, requestDto);
+    @PostMapping("/scheduleDateTune/{scheduleNo}")
+    public Long saveTuneDate(@PathVariable Long scheduleNo, @RequestBody ScheduleDateTuneSaveRequestDto requestDto) {
+        return scheduleDateTuneService.saveTuneDate(scheduleNo, requestDto);
     }
 }

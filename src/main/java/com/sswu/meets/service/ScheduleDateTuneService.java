@@ -16,7 +16,7 @@ public class ScheduleDateTuneService {
     private final ScheduleRepository scheduleRepository;
 
     @Transactional
-    public Long saveDateTune(Long scheduleNo, ScheduleDateTuneSaveRequestDto requestDto) {
+    public Long saveTuneDate(Long scheduleNo, ScheduleDateTuneSaveRequestDto requestDto) {
         Schedule schedule = scheduleRepository.getById(scheduleNo);
         return scheduleDateTuneRepository.save(requestDto.toEntity(schedule)).getScheduleDateTuneNo();
     }

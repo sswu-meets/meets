@@ -1,9 +1,9 @@
 package com.sswu.meets.controller;
 
 import com.sswu.meets.dto.ScheduleResponseDto;
-import com.sswu.meets.dto.ScheduleSaveRequestDto;
+import com.sswu.meets.dto.FixScheduleSaveRequestDto;
+import com.sswu.meets.dto.TuneScheduleSaveRequestDto;
 import com.sswu.meets.dto.ScheduleUpdateRequestDto;
-import com.sswu.meets.dto.UserSaveRequestDto;
 import com.sswu.meets.service.ScheduleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -20,11 +20,18 @@ public class ScheduleController {
 
     private final ScheduleService scheduleService;
 
-    @ApiOperation(value = "모임에 일정 등록")
+    @ApiOperation(value = "모임에 고정 일정 등록")
     @ApiImplicitParam(name = "meetingNo", value = "모임 번호")
-    @PostMapping("/schedule/{meetingNo}")
-    public Long save(@PathVariable Long meetingNo, @RequestBody ScheduleSaveRequestDto scheduleSaveRequestDto) {
-        return scheduleService.save(meetingNo, scheduleSaveRequestDto);
+    @PostMapping("/schedule/fix/{meetingNo}")
+    public Long saveFixDate(@PathVariable Long meetingNo, @RequestBody FixScheduleSaveRequestDto fixRequestDto) {
+        return scheduleService.saveFixDate(meetingNo, fixRequestDto);
+    }
+
+    @ApiOperation(value = "모임에 조율 일정 등록")
+    @ApiImplicitParam(name = "meetingNo", value = "모임 번호")
+    @PostMapping("/schedule/tune/{meetingNo}")
+    public Long saveTuneDate(@PathVariable Long meetingNo, @RequestBody TuneScheduleSaveRequestDto tuneRequestDto) {
+        return scheduleService.saveTuneDate(meetingNo, tuneRequestDto);
     }
 
     @ApiOperation(value = "모임 일정 조회")
