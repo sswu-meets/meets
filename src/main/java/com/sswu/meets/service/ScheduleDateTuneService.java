@@ -1,13 +1,20 @@
 package com.sswu.meets.service;
 
+import com.sswu.meets.domain.meeting.Meeting;
 import com.sswu.meets.domain.schedule.Schedule;
 import com.sswu.meets.domain.schedule.ScheduleRepository;
 import com.sswu.meets.domain.scheduleDateTune.ScheduleDateTuneRepository;
+import com.sswu.meets.dto.ScheduleDateTuneResponseDto;
 import com.sswu.meets.dto.ScheduleDateTuneSaveRequestDto;
+import com.sswu.meets.dto.ScheduleSaveRequestDto;
+import com.sswu.meets.dto.TodoResponseDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @RequiredArgsConstructor
 @Service
@@ -19,5 +26,13 @@ public class ScheduleDateTuneService {
     public Long saveDateTune(Long scheduleNo, ScheduleDateTuneSaveRequestDto requestDto) {
         Schedule schedule = scheduleRepository.getById(scheduleNo);
         return scheduleDateTuneRepository.save(requestDto.toEntity(schedule)).getScheduleDateTuneNo();
+    }
+
+    @Transactional
+    public List<ScheduleDateTuneResponseDto> getDateTuneList(Long scheduleNo) {
+        Schedule schedule = scheduleRepository.getById(scheduleNo);
+        return scheduleDateTuneRepository.findBySchedule(schedule).stream()
+                .map(ScheduleDateTuneResponseDto::new)
+                .collect(Collectors.toList());
     }
 }
