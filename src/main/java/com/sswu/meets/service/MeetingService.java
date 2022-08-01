@@ -73,13 +73,12 @@ public class MeetingService {
         User participationUser = userRepository.getById(user_no);
         Meeting participationMeeting = meetingRepository.findByMeetingCode(meetingCode);
 
-        if (participationRepository.findParticipationByUserAndMeeting(participationUser, participationMeeting) != null) {
+        if (participationRepository.findParticipationByUserAndMeeting(participationUser, participationMeeting) == null) {
             Participation participation = Participation.builder()
                     .meeting(participationMeeting)
                     .user(participationUser)
                     .build();
             participationRepository.save(participation);
-
         }
 
 

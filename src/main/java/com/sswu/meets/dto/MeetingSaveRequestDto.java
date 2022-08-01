@@ -1,6 +1,7 @@
 package com.sswu.meets.dto;
 
 import com.sswu.meets.domain.meeting.Meeting;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +9,10 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class MeetingSaveRequestDto {
+    @ApiModelProperty(example = "meets")
     private String name;
+
+    @ApiModelProperty(example = "#ED7D31")
     private String meetingColor;
 
     @Builder
