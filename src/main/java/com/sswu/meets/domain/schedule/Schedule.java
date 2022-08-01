@@ -39,4 +39,5 @@ public class Schedule {
 
         return this;
     }
+
 }

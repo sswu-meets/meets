@@ -3,7 +3,6 @@ package com.sswu.meets.controller;
 import com.sswu.meets.dto.ScheduleResponseDto;
 import com.sswu.meets.dto.ScheduleSaveRequestDto;
 import com.sswu.meets.dto.ScheduleUpdateRequestDto;
-import com.sswu.meets.dto.UserSaveRequestDto;
 import com.sswu.meets.service.ScheduleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
