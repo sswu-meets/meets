@@ -20,12 +20,14 @@ public class TodoService {
     private final TodoRepository todoRepository;
     private final ScheduleRepository scheduleRepository;
 
+    // 투두 리스트 등록
     @Transactional
     public Long saveTodo(Long scheduleNo, TodoSaveRequestDto requestDto) {
         Schedule schedule = scheduleRepository.getById(scheduleNo);
         return todoRepository.save(requestDto.toEntity(schedule)).getTodoNo();
     }
 
+    // 투두 리스트 조회
     @Transactional
     public List<TodoResponseDto> getTodoList(Long scheduleNo) {
         Schedule schedule = scheduleRepository.getById(scheduleNo);
@@ -35,6 +37,7 @@ public class TodoService {
 
     }
 
+    // 투두 리스트 삭제
     @Transactional
     public Boolean deleteTodo(Long todoNo) {
         Todo todo = todoRepository.getById(todoNo);
@@ -47,23 +50,17 @@ public class TodoService {
         }
     }
 
-//    public Boolean updateTodo(Long todoNo, TodoUpdateRequestDto requestDto) {
-//        Todo todo = todoRepository.getById(todoNo);
-//        try {
-//            todo.update(requestDto.getTodoContent(), requestDto.getTodoStatus());
-//            return true;
-//        } catch (Exception e) {
-//            System.out.println("error: " + e);
-//            return false;
-//        }
-//    }
-
+    // 투두 리스트 부분 수정
     @Transactional
     public Boolean updateTodo(Long todoNo, TodoUpdateRequestDto requestDto) {
-        Todo todo = todoRepository.findById(todoNo)
-                .orElseThrow(() -> new
-                        IllegalArgumentException("해당 투두가 없습니다. todoNo=" + todoNo));
-        todo.update(requestDto.getTodoContent(), requestDto.getTodoStatus());
+        Todo todo = todoRepository.findById(todoNo).get();
+        if(requestDto.getTodoContent() != null) {
+            todo.updateContent(requestDto.getTodoContent());
+        }
+
+        if (requestDto.getTodoStatus() != null) {
+            todo.updateStatus(requestDto.getTodoStatus());
+        }
 
         return true;
     }

@@ -2,15 +2,13 @@ package com.sswu.meets.domain.todo;
 
 import com.mysql.cj.protocol.ColumnDefinition;
 import com.sswu.meets.domain.schedule.Schedule;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 
+@Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -42,8 +40,12 @@ public class Todo {
         this.todoStatus = todoStatus;
     }
 
-    public Todo update(String todoContent, Boolean todoStatus) {
+    public Todo updateContent(String todoContent) {
         this.todoContent = todoContent;
+        return this;
+    }
+
+    public Todo updateStatus(Boolean todoStatus) {
         this.todoStatus = todoStatus;
         return this;
     }
