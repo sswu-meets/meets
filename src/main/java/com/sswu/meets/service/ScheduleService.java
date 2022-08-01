@@ -4,7 +4,6 @@ import com.sswu.meets.domain.meeting.Meeting;
 import com.sswu.meets.domain.meeting.MeetingRepository;
 import com.sswu.meets.domain.schedule.Schedule;
 import com.sswu.meets.domain.schedule.ScheduleRepository;
-import com.sswu.meets.domain.user.User;
 import com.sswu.meets.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,13 +17,35 @@ import java.util.stream.Collectors;
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final MeetingRepository meetingRepository;
+    private final ScheduleDateTuneService scheduleDateTuneService;
+    private final ScheduleDateFixService scheduleDateFixService;
 
-    // 일정 등록
+    // 고정 일정 등록
     @Transactional
-    public Long save(Long meetingNo, ScheduleSaveRequestDto scheduleSaveRequestDto) {
+    public Long saveFixDate(Long meetingNo, FixScheduleSaveRequestDto fixRequestDto) {
         Meeting meeting = meetingRepository.getById(meetingNo);
 
-        return scheduleRepository.save(scheduleSaveRequestDto.toEntity(meeting)).getScheduleNo();
+        Long scheduleNo = scheduleRepository.save(fixRequestDto.toEntity(meeting)).getScheduleNo();
+
+        ScheduleDateFixSaveRequestDto dateFixSaveRequestDto = fixRequestDto.changeFormat();
+
+        scheduleDateFixService.saveFixDate(scheduleNo, dateFixSaveRequestDto);
+
+        return scheduleNo;
+    }
+
+    //  조율 일정 등록
+    @Transactional
+    public Long saveTuneDate(Long meetingNo, TuneScheduleSaveRequestDto tuneRequestDto) {
+        Meeting meeting = meetingRepository.getById(meetingNo);
+
+        Long scheduleNo = scheduleRepository.save(tuneRequestDto.toEntity(meeting)).getScheduleNo();
+
+        ScheduleDateTuneSaveRequestDto dateTuneSaveRequestDto = tuneRequestDto.changeFormat();
+
+        scheduleDateTuneService.saveTuneDate(scheduleNo, dateTuneSaveRequestDto);
+
+        return scheduleNo;
     }
 
     // 일정 조회

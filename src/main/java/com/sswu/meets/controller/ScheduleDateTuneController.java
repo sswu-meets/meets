@@ -2,13 +2,14 @@ package com.sswu.meets.controller;
 
 import com.sswu.meets.dto.ScheduleDateTuneResponseDto;
 import com.sswu.meets.dto.ScheduleDateTuneSaveRequestDto;
-import com.sswu.meets.dto.TodoResponseDto;
 import com.sswu.meets.service.ScheduleDateTuneService;
 import lombok.RequiredArgsConstructor;
+import springfox.documentation.annotations.ApiIgnore;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@ApiIgnore
 @RequiredArgsConstructor
 @RestController
 public class ScheduleDateTuneController {
@@ -16,8 +17,8 @@ public class ScheduleDateTuneController {
 
     // 일정 날짜 조율 등록
     @PostMapping("/scheduleDateTune/{scheduleNo}")
-    public Long saveDateTune(@PathVariable Long scheduleNo, @RequestBody ScheduleDateTuneSaveRequestDto requestDto) {
-        return scheduleDateTuneService.saveDateTune(scheduleNo, requestDto);
+    public Long saveTuneDate(@PathVariable Long scheduleNo, @RequestBody ScheduleDateTuneSaveRequestDto requestDto) {
+        return scheduleDateTuneService.saveTuneDate(scheduleNo, requestDto);
     }
 
 

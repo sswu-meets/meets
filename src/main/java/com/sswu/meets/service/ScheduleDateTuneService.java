@@ -6,8 +6,6 @@ import com.sswu.meets.domain.schedule.ScheduleRepository;
 import com.sswu.meets.domain.scheduleDateTune.ScheduleDateTuneRepository;
 import com.sswu.meets.dto.ScheduleDateTuneResponseDto;
 import com.sswu.meets.dto.ScheduleDateTuneSaveRequestDto;
-import com.sswu.meets.dto.ScheduleSaveRequestDto;
-import com.sswu.meets.dto.TodoResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +21,7 @@ public class ScheduleDateTuneService {
     private final ScheduleRepository scheduleRepository;
 
     @Transactional
-    public Long saveDateTune(Long scheduleNo, ScheduleDateTuneSaveRequestDto requestDto) {
+    public Long saveTuneDate(Long scheduleNo, ScheduleDateTuneSaveRequestDto requestDto) {
         Schedule schedule = scheduleRepository.getById(scheduleNo);
         return scheduleDateTuneRepository.save(requestDto.toEntity(schedule)).getScheduleDateTuneNo();
     }
