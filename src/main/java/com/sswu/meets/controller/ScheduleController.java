@@ -41,7 +41,7 @@ public class ScheduleController {
         return scheduleService.getScheduleList(meetingNo);
     }
 
-    @ApiOperation(value = "일정 수정")
+    @ApiOperation(value = "일정 수정", notes = "현재는 이름만 수정 가능 (todo도 수정 가능하도록 업데이트 예정)")
     @ApiImplicitParam(name = "scheduleNo", value = "일정 번호")
     @PutMapping("/schedule/{scheduleNo}")
     public Boolean update(@PathVariable Long scheduleNo, @RequestBody ScheduleUpdateRequestDto requestDto) {
