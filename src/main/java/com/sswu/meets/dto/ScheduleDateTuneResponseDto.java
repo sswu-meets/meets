@@ -9,6 +9,7 @@ import java.time.LocalTime;
 @Getter
 public class ScheduleDateTuneResponseDto {
     private Long scheduleDateTuneNo;
+    private Long scheduleNo;
     private LocalDate startDate;
     private LocalDate endDate;
     private LocalTime startTime;
@@ -16,6 +17,7 @@ public class ScheduleDateTuneResponseDto {
 
     public ScheduleDateTuneResponseDto(ScheduleDateTune entity) {
         this.scheduleDateTuneNo = entity.getScheduleDateTuneNo();
+        this.scheduleNo = entity.getSchedule().getScheduleNo();
         this.startDate = entity.getStartDate();
         this.endDate = entity.getEndDate();
         this.startTime = entity.getStartTime();
