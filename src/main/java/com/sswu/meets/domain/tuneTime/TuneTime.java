@@ -38,9 +38,13 @@ public class TuneTime {
         this.avPeopleNo = avPeopleNo;
     }
 
-    public TuneTime updatePeopleNo(Long avPeopleNo) {
-        this.avPeopleNo = avPeopleNo;
+    public TuneTime addPeopleNo() {
+        this.avPeopleNo++;
 
         return this;
+    }
+
+    public Long subPeopleNo() {
+        return this.avPeopleNo--;
     }
 }
