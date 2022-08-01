@@ -13,15 +13,15 @@ public class OAuthAttributes {
     private String nameAttributeKey;
     private String email;
     private String name;
-    private String profile_url;
+    private String profileUrl;
 
     @Builder
-    public OAuthAttributes(Map<String, Object> attributes, String nameAttributeKey, String email, String name, String profile_url) {
+    public OAuthAttributes(Map<String, Object> attributes, String nameAttributeKey, String email, String name, String profileUrl) {
         this.attributes = attributes;
         this.nameAttributeKey = nameAttributeKey;
         this.email = email;
         this.name = name;
-        this.profile_url = profile_url;
+        this.profileUrl = profileUrl;
     }
 
     public static OAuthAttributes of(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
@@ -32,7 +32,7 @@ public class OAuthAttributes {
         return OAuthAttributes.builder()
                 .email((String) attributes.get("email"))
                 .name((String) attributes.get("name"))
-                .profile_url((String) attributes.get("picture"))
+                .profileUrl((String) attributes.get("picture"))
                 .attributes(attributes)
                 .nameAttributeKey(userNameAttributeName)
                 .build();
@@ -42,7 +42,7 @@ public class OAuthAttributes {
         return User.builder()
                 .email(email)
                 .name(name)
-                .profile_url(profile_url)
+                .profileUrl(profileUrl)
                 .role(Role.USER)
                 .build();
     }

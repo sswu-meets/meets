@@ -1,5 +1,6 @@
 package com.sswu.meets.controller;
 
+import com.sswu.meets.config.auth.dto.SessionUser;
 import com.sswu.meets.dto.MeetingResponseDto;
 import com.sswu.meets.dto.MeetingSaveRequestDto;
 import com.sswu.meets.dto.UserResponseDto;
@@ -11,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Api(tags = "모임")
@@ -18,6 +20,7 @@ import java.util.List;
 @RestController
 public class MeetingController {
     private final MeetingService meetingService;
+    private final HttpSession httpSession;
 
     @ApiOperation(value = "모임에 참여하고 있는 유저 조회")
     @ApiImplicitParam(name = "meeting_no", value = "모임 아이디(고유 식별 번호)", required = true)
@@ -27,10 +30,12 @@ public class MeetingController {
     }
 
     @ApiOperation(value = "모임 등록")
-    @PostMapping("/meeting/{user_no}")
-    @ApiImplicitParam(name = "user_no", value = "유저 아이디(고유 식별 번호)", required = true)
-    public Long saveMeeting(@PathVariable Long user_no, @RequestBody MeetingSaveRequestDto requestDto) {
-        return meetingService.saveMeeting(user_no, requestDto);
+    @PostMapping("/meeting")
+    public Long saveMeeting(@RequestBody MeetingSaveRequestDto requestDto) {
+        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
+
+
+        return meetingService.saveMeeting(sessionUser.getUserNo(), requestDto);
     }
 
     @ApiOperation(value = "모임 참여")
