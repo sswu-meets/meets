@@ -1,9 +1,9 @@
 package com.sswu.meets.service;
 
-import com.sswu.meets.domain.schedule.Schedule;
+import com.sswu.meets.domain.participation.ParticipationRepository;
 import com.sswu.meets.domain.user.User;
 import com.sswu.meets.domain.user.UserRepository;
-import com.sswu.meets.dto.ScheduleUpdateRequestDto;
+import com.sswu.meets.dto.MeetingResponseDto;
 import com.sswu.meets.dto.UserResponseDto;
 import com.sswu.meets.dto.UserSaveRequestDto;
 import com.sswu.meets.dto.UserUpdateRequestDto;
@@ -12,19 +12,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    //private final MeetingRepository meetingRepository;
-    //private final ParticipationRepository participationRepository;
+    private final ParticipationRepository participationRepository;
 
     @Transactional
     public Long save(UserSaveRequestDto userSaveRequestDto) {
-        return userRepository.save(userSaveRequestDto.toEntity()).getUser_no();
+        return userRepository.save(userSaveRequestDto.toEntity()).getUserNo();
     }
 
     // 결과로 넘어온 User의 Stream을 map을 통해 UserResponseDto 변환, 그 후 List로 반환
@@ -33,6 +31,17 @@ public class UserService {
         System.out.println(userRepository.findAll());
         return userRepository.findAll().stream()
                 .map(UserResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    // 유저가 참여하고 있는 모임 조회
+    @Transactional
+    public List<MeetingResponseDto> getMeetingList(Long user_no) {
+        User participationUser = userRepository.getById(user_no);
+
+        return participationRepository.findParticipationByUser(participationUser).stream()
+                .map(p -> p.getMeeting())
+                .map(MeetingResponseDto::new)
                 .collect(Collectors.toList());
     }
 

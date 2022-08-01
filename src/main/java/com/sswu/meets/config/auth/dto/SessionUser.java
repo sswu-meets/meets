@@ -7,13 +7,15 @@ import java.io.Serializable;
 
 @Getter
 public class SessionUser implements Serializable {
+    private Long userNo;
     private String email;
     private String name;
-    private String profile_url;
+    private String profileUrl;
 
     public SessionUser(User user) {
+        this.userNo = user.getUserNo();
         this.email = user.getEmail();
         this.name = user.getName();
-        this.profile_url = user.getProfile_url();
+        this.profileUrl = user.getProfileUrl();
     }
 }

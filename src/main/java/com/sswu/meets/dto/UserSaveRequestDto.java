@@ -11,20 +11,20 @@ public class UserSaveRequestDto {
     public Object getTitle;
     private String email;
     private String name;
-    private String profile_url;
+    private String profileUrl;
 
     @Builder
-    public UserSaveRequestDto(String email, String name, String profile_url) {
+    public UserSaveRequestDto(String email, String name, String profileUrl) {
         this.email = email;
         this.name = name;
-        this.profile_url = profile_url;
+        this.profileUrl = profileUrl;
     }
 
     public User toEntity() {
         return User.builder()
                 .email(email)
                 .name(name)
-                .profile_url(profile_url)
+                .profileUrl(profileUrl)
                 .build();
     }
 }

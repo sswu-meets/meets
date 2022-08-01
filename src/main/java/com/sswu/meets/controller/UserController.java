@@ -1,6 +1,7 @@
 package com.sswu.meets.controller;
 
 import com.sswu.meets.config.auth.dto.SessionUser;
+import com.sswu.meets.dto.MeetingResponseDto;
 import com.sswu.meets.dto.UserResponseDto;
 import com.sswu.meets.dto.UserSaveRequestDto;
 import com.sswu.meets.dto.UserUpdateRequestDto;
@@ -46,7 +47,15 @@ public class UserController {
         return userService.getUserList();
     }
 
-    @ApiOperation(value = "마이페이지", notes = "\"로그인 한 유저의 경우, 유저 정보 반환 | 로그인 하지 않은 유저의 경우, \"로그인을 먼저 해주세요.\"")
+    @ApiOperation(value = "유저가 참여하고 있는 모든 모임 조회")
+    @GetMapping("/user/meetinglist")
+    public List<MeetingResponseDto> getMeetingListOfUser() {
+        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
+
+        return userService.getMeetingList(sessionUser.getUserNo());
+    }
+
+    @ApiOperation(value = "마이페이지", notes = "\"로그인 한 유저의 경우, 유저 정보 반환 | 로그인 하지 않은 유저의 경우, \"로그인을 먼저 해주세요.\" 안내 메세지 반환")
     @GetMapping("/user/mypage")
     public Object getUserInfo() {
         SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");

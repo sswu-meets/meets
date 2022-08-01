@@ -24,17 +24,6 @@ public class MeetingService {
     private final ParticipationRepository participationRepository;
     private final UserRepository userRepository;
 
-    // 유저가 참여하고 있는 모임 조회
-    @Transactional
-    public List<MeetingResponseDto> getMeetingList(Long user_no) {
-        User participationUser = userRepository.getById(user_no);
-
-        return participationRepository.findParticipationByUser(participationUser).stream()
-                .map(p -> p.getMeeting())
-                .map(MeetingResponseDto::new)
-                .collect(Collectors.toList());
-    }
-
     // 모임에 참여하고 있는 유저 조회
     @Transactional
     public List<UserResponseDto> getUserListOfMeeting(Long meeting_no) {
@@ -73,13 +62,12 @@ public class MeetingService {
         User participationUser = userRepository.getById(user_no);
         Meeting participationMeeting = meetingRepository.findByMeetingCode(meetingCode);
 
-        if (participationRepository.findParticipationByUserAndMeeting(participationUser, participationMeeting) != null) {
+        if (participationRepository.findParticipationByUserAndMeeting(participationUser, participationMeeting) == null) {
             Participation participation = Participation.builder()
                     .meeting(participationMeeting)
                     .user(participationUser)
                     .build();
             participationRepository.save(participation);
-
         }
 
 
