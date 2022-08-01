@@ -16,6 +16,8 @@ public class MeetingResponseDto {
 
     @ApiModelProperty(example = "3LB58f7MkS")
     private String meetingCode;
+
+    @ApiModelProperty(example = "#ED7D31")
     private String meetingColor;
 
     public MeetingResponseDto(Meeting meetingEntity) {

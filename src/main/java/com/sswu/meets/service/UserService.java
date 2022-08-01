@@ -1,7 +1,9 @@
 package com.sswu.meets.service;
 
+import com.sswu.meets.domain.participation.ParticipationRepository;
 import com.sswu.meets.domain.user.User;
 import com.sswu.meets.domain.user.UserRepository;
+import com.sswu.meets.dto.MeetingResponseDto;
 import com.sswu.meets.dto.UserResponseDto;
 import com.sswu.meets.dto.UserSaveRequestDto;
 import com.sswu.meets.dto.UserUpdateRequestDto;
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final ParticipationRepository participationRepository;
 
     @Transactional
     public Long save(UserSaveRequestDto userSaveRequestDto) {
@@ -28,6 +31,17 @@ public class UserService {
         System.out.println(userRepository.findAll());
         return userRepository.findAll().stream()
                 .map(UserResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    // 유저가 참여하고 있는 모임 조회
+    @Transactional
+    public List<MeetingResponseDto> getMeetingList(Long user_no) {
+        User participationUser = userRepository.getById(user_no);
+
+        return participationRepository.findParticipationByUser(participationUser).stream()
+                .map(p -> p.getMeeting())
+                .map(MeetingResponseDto::new)
                 .collect(Collectors.toList());
     }
 

@@ -23,7 +23,7 @@ public class MeetingController {
 
     @ApiOperation(value = "모임에 참여하고 있는 유저 조회")
     @ApiImplicitParam(name = "meeting_no", value = "모임 아이디(고유 식별 번호)", required = true)
-    @GetMapping("/meeting/{meeting_no}")
+    @GetMapping("/meeting/userlist/{meeting_no}")
     public List<UserResponseDto> getUserListOfMeeting(@PathVariable Long meeting_no) {
         return meetingService.getUserListOfMeeting(meeting_no);
     }
