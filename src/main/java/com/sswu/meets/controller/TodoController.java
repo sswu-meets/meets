@@ -1,4 +1,4 @@
-package com.sswu.meets.controller;
+gitpackage com.sswu.meets.controller;
 
 import com.sswu.meets.dto.TodoResponseDto;
 import com.sswu.meets.dto.TodoSaveRequestDto;

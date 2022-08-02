@@ -53,7 +53,7 @@ public class TodoService {
     // 투두 리스트 부분 수정
     @Transactional
     public Boolean updateTodo(Long todoNo, TodoUpdateRequestDto requestDto) {
-        Todo todo = todoRepository.findById(todoNo).get();
+        Todo todo = todoRepository.getById(todoNo);
         if(requestDto.getTodoContent() != null) {
             todo.updateContent(requestDto.getTodoContent());
         }
