@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Api(tags = "조율")
 @RequiredArgsConstructor
@@ -22,9 +23,9 @@ public class DateTuneController {
 
     @ApiOperation(value = "조율 데이터 저장")
     @PostMapping("/tune/{scheduleNo}")
-    public Boolean saveAvDateAndTime(@PathVariable Long scheduleNo, @RequestBody DateTuneSaveRequestDto requestDto) {
+    public Boolean saveAvDateAndTime(@PathVariable Long scheduleNo, @RequestBody List<DateTuneSaveRequestDto> requestDtoList) {
         SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
 
-        return dateTuneService.saveAvDateAndTime(sessionUser.getUserNo(), scheduleNo, requestDto);
+        return dateTuneService.saveAvDateAndTime(sessionUser.getUserNo(), scheduleNo, requestDtoList);
     }
 }

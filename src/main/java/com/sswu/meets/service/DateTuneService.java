@@ -30,53 +30,62 @@ public class DateTuneService {
 
     // 조율 데이터 저장
     @Transactional
-    public Boolean saveAvDateAndTime(Long userNo, Long scheduleNo, DateTuneSaveRequestDto requestDto) {
+    public Boolean saveAvDateAndTime(Long userNo, Long scheduleNo, List<DateTuneSaveRequestDto> requestDtoList) {
         User user = userRepository.findById(userNo)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저는 없습니다. userNo=" + userNo));
         Schedule schedule = scheduleRepository.findById(scheduleNo)
                 .orElseThrow(() -> new IllegalArgumentException("해당 일정은 없습니다. scheduleNo=" + scheduleNo));
 
-        deleteAvDateAndTime(user, schedule);
+        for (DateTuneSaveRequestDto requestDtoListItem : requestDtoList) {
+            DateTune dateTune = requestDtoListItem.toEntity(user, schedule);
 
-        DateTune dateTune = requestDto.toEntity(user, schedule);
-        dateTune = dateTuneRepository.save(dateTune);
-        log.info("가능 날짜 저장 완료");
+            deleteAvDateAndTime(dateTune);
 
-        for (String avTimeListItem : requestDto.getAvTime()) {
-            AvTime avTime = requestDto.toAvTime(dateTune, avTimeListItem);
-            avTime = avTimeRepository.save(avTime);
-            log.info("가능 시간 저장 완료");
+            dateTune = dateTuneRepository.save(dateTune);
+            log.info("가능 날짜 저장 완료");
 
-            TuneTime tuneTime = tuneTimeRepository.findByScheduleAndTuneDateAndTuneTime(schedule, dateTune.getAvDate(), avTime.getAvTime());
+            for (String avTimeListItem : requestDtoListItem.getAvTime()) {
+                AvTime avTime = requestDtoListItem.toAvTime(dateTune, avTimeListItem);
+                avTime = avTimeRepository.save(avTime);
+                log.info("가능 시간 저장 완료");
 
-            if (tuneTime == null) {
-                tuneTimeRepository.save(requestDto.toTuneTime(schedule, avTimeListItem, 1L));
-                log.info("일정 조율 시간에 새로운 데이터 저장");
-            } else {
-                tuneTime.addPeopleNo();
-                log.info("일정 조율 시간에 가능 인원 수 증가");
+                TuneTime tuneTime = tuneTimeRepository.findByScheduleAndTuneDateAndTuneTime(schedule, dateTune.getAvDate(), avTime.getAvTime());
+
+                if (tuneTime == null) {
+                    tuneTimeRepository.save(requestDtoListItem.toTuneTime(schedule, avTimeListItem, 1L));
+                    log.info("일정 조율 시간에 새로운 데이터 저장");
+                } else {
+                    tuneTime.addPeopleNo();
+                    log.info("일정 조율 시간에 가능 인원 수 증가");
+                }
             }
         }
+
+
 
         return true;
     }
 
     // 기존 조율 데이터가 있는 경우, 수정을 위해 삭제
-    public void deleteAvDateAndTime(User user, Schedule schedule) {
-        DateTune dateTune = dateTuneRepository.findByUserAndSchedule(user, schedule);
+    public void deleteAvDateAndTime(DateTune requestDateTune) {
+        DateTune dateTune = dateTuneRepository.findByUserAndScheduleAndAvDate(requestDateTune.getUser(), requestDateTune.getSchedule(), requestDateTune.getAvDate());
 
         if (dateTune != null) {
+            log.info("기존 조율 데이터를 삭제합니다.");
             dateTuneRepository.delete(dateTune);
             List<AvTime> avTimeList = avTimeRepository.findByDateTune(dateTune);
             for (AvTime avTimeListItem : avTimeList) {
+                log.info("avTimeNo={}", avTimeListItem.getAvTimeNo());
                 avTimeRepository.delete(avTimeListItem);
-                TuneTime tuneTime = tuneTimeRepository.findByScheduleAndTuneDateAndTuneTime(schedule, dateTune.getAvDate(), avTimeListItem.getAvTime());
+                log.info("scheduleNo={}", requestDateTune.getSchedule().getScheduleNo());
+                log.info("userNo={}", requestDateTune.getUser().getUserNo());
+                TuneTime tuneTime = tuneTimeRepository.findByScheduleAndTuneDateAndTuneTime(requestDateTune.getSchedule(), dateTune.getAvDate(), avTimeListItem.getAvTime());
+                log.info("tuneTime.subPeoleNo={}", tuneTime.subPeopleNo());
                 if (tuneTime.subPeopleNo() == 0) {
                     tuneTimeRepository.delete(tuneTime);
                 }
             }
 
-            log.info("기존 조율 데이터가 삭제되었습니다.");
         } else {
             log.info("새로운 조율 데이터 저장을 시작합니다.");
         }
