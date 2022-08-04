@@ -45,6 +45,6 @@ public class TuneTime {
     }
 
     public Long subPeopleNo() {
-        return this.avPeopleNo--;
+        return --this.avPeopleNo;
     }
 }
