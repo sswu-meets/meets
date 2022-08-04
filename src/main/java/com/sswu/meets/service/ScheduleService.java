@@ -58,6 +58,14 @@ public class ScheduleService {
                 .collect(Collectors.toList());
     }
 
+    // 특정 일정 조회
+    @Transactional
+    public List<ScheduleResponseDto> getSchedule(Long scheduleNo) {
+        return scheduleRepository.findById(scheduleNo).stream()
+                .map(ScheduleResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
     // 일정 수정
     @Transactional
     public Boolean update(Long scheduleNo, ScheduleUpdateRequestDto scheduleUpdateRequestDto) {

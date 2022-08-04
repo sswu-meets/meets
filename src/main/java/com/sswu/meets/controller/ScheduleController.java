@@ -1,5 +1,6 @@
 package com.sswu.meets.controller;
 
+import com.sswu.meets.domain.schedule.Schedule;
 import com.sswu.meets.dto.ScheduleResponseDto;
 import com.sswu.meets.dto.FixScheduleSaveRequestDto;
 import com.sswu.meets.dto.TuneScheduleSaveRequestDto;
@@ -39,6 +40,13 @@ public class ScheduleController {
     @GetMapping("/schedule/{meetingNo}")
     public List<ScheduleResponseDto> getScheduleList(@PathVariable Long meetingNo) {
         return scheduleService.getScheduleList(meetingNo);
+    }
+
+    @ApiOperation(value = "특정 일정 조회")
+    @ApiImplicitParam(name = "scheduleNo", value = "일정 번호")
+    @GetMapping("/schedule/read/{scheduleNo}")
+    public List<ScheduleResponseDto> getSchedule(@PathVariable Long scheduleNo) {
+        return scheduleService.getSchedule(scheduleNo);
     }
 
     @ApiOperation(value = "일정 수정", notes = "현재는 이름만 수정 가능 (todo도 수정 가능하도록 업데이트 예정)")
