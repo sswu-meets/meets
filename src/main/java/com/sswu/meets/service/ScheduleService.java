@@ -4,6 +4,7 @@ import com.sswu.meets.domain.meeting.Meeting;
 import com.sswu.meets.domain.meeting.MeetingRepository;
 import com.sswu.meets.domain.schedule.Schedule;
 import com.sswu.meets.domain.schedule.ScheduleRepository;
+import com.sswu.meets.domain.user.UserRepository;
 import com.sswu.meets.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -48,12 +49,20 @@ public class ScheduleService {
         return scheduleNo;
     }
 
-    // 일정 조회
+    // 모임에 속한 일정 조회
     @Transactional
     public List<ScheduleResponseDto> getScheduleList(Long meetingNo) {
         Meeting meeting = meetingRepository.getById(meetingNo);
 
         return scheduleRepository.findByMeeting(meeting).stream()
+                .map(ScheduleResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    // 특정 일정 조회
+    @Transactional
+    public List<ScheduleResponseDto> getSchedule(Long scheduleNo) {
+        return scheduleRepository.findById(scheduleNo).stream()
                 .map(ScheduleResponseDto::new)
                 .collect(Collectors.toList());
     }
