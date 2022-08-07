@@ -67,15 +67,18 @@ public class UserController {
     }
 
     @ApiOperation(value = "유저 정보 수정")
-    @PutMapping("/user/{user_no}")
-    public boolean update(@PathVariable Long user_no, @RequestBody UserUpdateRequestDto userSaveRequestDto){
-        return userService.update(user_no, userSaveRequestDto);
+    @PutMapping("/user")
+    public boolean update(@RequestBody UserUpdateRequestDto userSaveRequestDto){
+        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
+        return userService.update(sessionUser.getUserNo(), userSaveRequestDto);
     }
 
     @ApiOperation(value = "탈퇴하기")
-    @DeleteMapping("/user/{user_no}")
-    public boolean deleteUser(@PathVariable Long user_no) {
-        return userService.deleteUser(user_no);
+    @DeleteMapping("/user")
+    public boolean deleteUser() {
+        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
+        httpSession.invalidate();
+        return userService.deleteUser(sessionUser.getUserNo());
     }
 
     @ApiOperation(value = "로그인", notes = "구글 로그인 페이지로 이동")
