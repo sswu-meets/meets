@@ -71,7 +71,7 @@ public class ScheduleService {
     @Transactional
     public Boolean update(Long scheduleNo, ScheduleUpdateRequestDto scheduleUpdateRequestDto) {
         Schedule schedule = scheduleRepository.findById(scheduleNo)
-                .orElseThrow(() -> new IllegalArgumentException("해당 일정이 없습니다. scheduleNo=" + scheduleNo));
+                .orElseThrow(() -> new IllegalArgumentException("해당 일정은 없습니다. scheduleNo=" + scheduleNo));
         schedule.update(scheduleUpdateRequestDto.getScheduleName());
 
         return true;
@@ -80,7 +80,7 @@ public class ScheduleService {
     // 일정 삭제
     public Boolean delete(Long scheduleNo) {
         Schedule schedule = scheduleRepository.findById(scheduleNo)
-                .orElseThrow(() -> new IllegalArgumentException("해당 일정 없습니다. scheduleNo=" + scheduleNo));
+                .orElseThrow(() -> new IllegalArgumentException("해당 일정은 없습니다. scheduleNo=" + scheduleNo));
         scheduleRepository.delete(schedule);
 
         return true;
