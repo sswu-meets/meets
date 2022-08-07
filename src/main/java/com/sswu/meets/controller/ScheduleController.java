@@ -1,10 +1,6 @@
 package com.sswu.meets.controller;
 
-import com.sswu.meets.domain.schedule.Schedule;
-import com.sswu.meets.dto.ScheduleResponseDto;
-import com.sswu.meets.dto.FixScheduleSaveRequestDto;
-import com.sswu.meets.dto.TuneScheduleSaveRequestDto;
-import com.sswu.meets.dto.ScheduleUpdateRequestDto;
+import com.sswu.meets.dto.*;
 import com.sswu.meets.service.ScheduleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -37,14 +33,14 @@ public class ScheduleController {
 
     @ApiOperation(value = "모임 일정 조회")
     @ApiImplicitParam(name = "meetingNo", value = "모임 번호")
-    @GetMapping("/schedule/{meetingNo}")
+    @GetMapping("/schedule/meeting/{meetingNo}")
     public List<ScheduleResponseDto> getScheduleList(@PathVariable Long meetingNo) {
         return scheduleService.getScheduleList(meetingNo);
     }
 
     @ApiOperation(value = "특정 일정 조회")
     @ApiImplicitParam(name = "scheduleNo", value = "일정 번호")
-    @GetMapping("/schedule/read/{scheduleNo}")
+    @GetMapping("/schedule/{scheduleNo}")
     public List<ScheduleResponseDto> getSchedule(@PathVariable Long scheduleNo) {
         return scheduleService.getSchedule(scheduleNo);
     }
