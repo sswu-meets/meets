@@ -9,6 +9,7 @@ import com.sswu.meets.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
+@Slf4j
 @Api(tags = "유저")
 @RequiredArgsConstructor
 @RestController
@@ -68,14 +70,14 @@ public class UserController {
 
     @ApiOperation(value = "유저 정보 수정")
     @PutMapping("/user")
-    public boolean update(@RequestBody UserUpdateRequestDto userSaveRequestDto){
+    public Boolean update(@RequestBody UserUpdateRequestDto userSaveRequestDto){
         SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
         return userService.update(sessionUser.getUserNo(), userSaveRequestDto);
     }
 
     @ApiOperation(value = "탈퇴하기")
     @DeleteMapping("/user")
-    public boolean deleteUser() {
+    public Boolean deleteUser() {
         SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
         httpSession.invalidate();
         return userService.deleteUser(sessionUser.getUserNo());
@@ -83,15 +85,21 @@ public class UserController {
 
     @ApiOperation(value = "로그인", notes = "구글 로그인 페이지로 이동")
     @GetMapping("/user/login")
-    public void login(HttpServletResponse httpServletResponse) throws IOException {
-        httpServletResponse.sendRedirect("/oauth2/authorization/google");
+    public Boolean login(HttpServletResponse httpServletResponse){
+        try {
+            httpServletResponse.sendRedirect("/oauth2/authorization/google");
+            return true;
+        } catch (IOException e) {
+            log.error("요청 처리 중 문제가 발생했습니다: {}", e);
+            return false;
+        }
     }
 
     @ApiOperation(value = "로그아웃", notes = "로그아웃 후 홈 페이지로 이동")
     @GetMapping("/user/logout")
-    public void logout(HttpServletResponse httpServletResponse) throws IOException {
+    public Boolean logout() {
         httpSession.invalidate();
-        httpServletResponse.sendRedirect("/");
+        return true;
     }
 
     @ApiOperation(value = "로그인 유무", notes = "로그인 한 경우, true 반환 | 로그인 하지 않은 경우, false 반환")
