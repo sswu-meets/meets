@@ -31,8 +31,8 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-//    @OneToMany(mappedBy = "user")
-//    private List<Attendance> attendanceList = new ArrayList<>();
+    @OneToMany(mappedBy = "user")
+    private List<Attendance> attendanceList = new ArrayList<>();
 
     @Builder
     public User(String email, String name, String profileUrl, Role role) {

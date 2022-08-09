@@ -49,13 +49,6 @@ public class ScheduleController {
         return scheduleService.getSchedule(scheduleNo);
     }
 
-//    @ApiOperation(value = "유저가 참여하고 있는 일정 조회")
-//    @ApiImplicitParam(name = "user_no", value = "유저 번호")
-//    @GetMapping("/schedule/user/{user_no}")
-//    public List<ScheduleResponseDto> getScheduleListOfUser(@PathVariable Long user_no) {
-//        return scheduleService.getScheduleListOfUser(user_no);
-//    }
-
     @ApiOperation(value = "유저가 참여하고 있는 일정 조회")
     @GetMapping("/schedule/user")
     public List<ScheduleResponseDto> getScheduleListOfUser() {
