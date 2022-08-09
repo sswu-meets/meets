@@ -1,9 +1,11 @@
 package com.sswu.meets.service;
 
+import com.sswu.meets.domain.attendance.AttendanceRepository;
 import com.sswu.meets.domain.meeting.Meeting;
 import com.sswu.meets.domain.meeting.MeetingRepository;
 import com.sswu.meets.domain.schedule.Schedule;
 import com.sswu.meets.domain.schedule.ScheduleRepository;
+import com.sswu.meets.domain.user.User;
 import com.sswu.meets.domain.user.UserRepository;
 import com.sswu.meets.dto.*;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,8 @@ import java.util.stream.Collectors;
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final MeetingRepository meetingRepository;
+    private final UserRepository userRepository;
+    private final AttendanceRepository attendanceRepository;
     private final ScheduleDateTuneService scheduleDateTuneService;
     private final ScheduleDateFixService scheduleDateFixService;
 
@@ -63,6 +67,16 @@ public class ScheduleService {
     @Transactional
     public List<ScheduleResponseDto> getSchedule(Long scheduleNo) {
         return scheduleRepository.findById(scheduleNo).stream()
+                .map(ScheduleResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    // 유저가 참여하고 있는 일정 조회
+    @Transactional
+    public List<ScheduleResponseDto> getScheduleListOfUser(Long user_no) {
+        User scheduleAttendance = userRepository.getById(user_no);
+        return attendanceRepository.findAttendanceByUser(scheduleAttendance).stream()
+                .map(p -> p.getSchedule())
                 .map(ScheduleResponseDto::new)
                 .collect(Collectors.toList());
     }

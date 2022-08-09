@@ -1,5 +1,6 @@
 package com.sswu.meets.domain.user;
 
+import com.sswu.meets.domain.attendance.Attendance;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -27,6 +30,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+//    @OneToMany(mappedBy = "user")
+//    private List<Attendance> attendanceList = new ArrayList<>();
 
     @Builder
     public User(String email, String name, String profileUrl, Role role) {
