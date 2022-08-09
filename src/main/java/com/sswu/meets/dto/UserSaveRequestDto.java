@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class UserSaveRequestDto {
-    public Object getTitle;
     private String email;
     private String name;
     private String profileUrl;
