@@ -1,18 +1,23 @@
 package com.sswu.meets.controller;
 
+import com.sswu.meets.config.auth.LoginUser;
 import com.sswu.meets.config.auth.dto.SessionUser;
 import com.sswu.meets.dto.*;
 import com.sswu.meets.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
+@Slf4j
 @Api(tags = "유저")
 @RequiredArgsConstructor
 @RestController
@@ -22,10 +27,9 @@ public class UserController {
 
     @ApiOperation(value = "홈 api", notes = "로그인 한 유저의 경우, OO님 환영합니다. | 로그인 하지 않은 유저의 경우, \"meets에 오신 걸 환영합니다:)\"")
     @GetMapping("/")
-    public String hello() {
-        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
-        if (sessionUser != null) {
-            String userName = sessionUser.getName();
+    public String hello(@LoginUser SessionUser user) {
+        if (user != null) {
+            String userName = user.getName();
             return userName + "님 환영합니다.";
         } else {
             return "meets에 오신 걸 환영합니다:)";
@@ -39,7 +43,7 @@ public class UserController {
     }
 
     @ApiOperation(value = "모든 유저 정보 조회")
-    @GetMapping("/user")
+    @GetMapping("/user/all")
     public List<UserResponseDto> getUserList() {
         return userService.getUserList();
     }
@@ -59,47 +63,56 @@ public class UserController {
         return userService.getScheduleList(sessionUser.getUserNo());
     }
 
-    @ApiOperation(value = "마이페이지", notes = "\"로그인 한 유저의 경우, 유저 정보 반환 | 로그인 하지 않은 유저의 경우, \"로그인을 먼저 해주세요.\" 안내 메세지 반환")
-    @GetMapping("/user/mypage")
-    public Object getUserInfo() {
-        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
-        if (sessionUser != null) {
-            return sessionUser;
+    @ApiOperation(value = "유저 정보 조회", notes = "\"로그인 한 유저의 경우, 유저 정보 반환 | 로그인 하지 않은 유저의 경우, \"로그인을 먼저 해주세요.\" 안내 메세지 반환")
+    @GetMapping("/user")
+    public ResponseEntity getUserInfo(@LoginUser SessionUser user) {
+        if (user != null) {
+            return ResponseEntity.status(200).body(user);
         } else {
-            return "로그인을 먼저 해주세요.";
+            return ResponseEntity.status(401).body("SessionUser is null");
         }
     }
 
+    @ApiOperation(value = "유저가 참여하고 있는 모든 모임 조회")
+    @GetMapping("/user/meetinglist")
+    public List<MeetingResponseDto> getMeetingListOfUser(@LoginUser SessionUser user) {
+        return userService.getMeetingList(user.getUserNo());
+    }
+
     @ApiOperation(value = "유저 정보 수정")
-    @PutMapping("/user/{user_no}")
-    public boolean update(@PathVariable Long user_no, @RequestBody UserUpdateRequestDto userSaveRequestDto){
-        return userService.update(user_no, userSaveRequestDto);
+    @PutMapping("/user")
+    public Boolean update(@LoginUser SessionUser user, @RequestBody UserUpdateRequestDto userSaveRequestDto){
+        return userService.update(user.getUserNo(), userSaveRequestDto);
     }
 
     @ApiOperation(value = "탈퇴하기")
-    @DeleteMapping("/user/{user_no}")
-    public boolean deleteUser(@PathVariable Long user_no) {
-        return userService.deleteUser(user_no);
+    @DeleteMapping("/user")
+    public Boolean deleteUser(@LoginUser SessionUser user) {
+        httpSession.invalidate();
+        return userService.deleteUser(user.getUserNo());
     }
 
-    @ApiOperation(value = "로그인", notes = "구글 로그인 페이지로 이동")
+    @ApiOperation(value = "로그인", notes = "구글 로그인 페이지로 이동. 성공시 \"/user/\" url로 이동")
     @GetMapping("/user/login")
-    public void login(HttpServletResponse httpServletResponse) throws IOException {
-        httpServletResponse.sendRedirect("/oauth2/authorization/google");
+    public void login(HttpServletResponse httpServletResponse){
+        try {
+            httpServletResponse.sendRedirect("/oauth2/authorization/google");
+        } catch (IOException e) {
+            log.error("요청 처리 중 문제가 발생했습니다: {}", e);
+        }
     }
 
     @ApiOperation(value = "로그아웃", notes = "로그아웃 후 홈 페이지로 이동")
     @GetMapping("/user/logout")
-    public void logout(HttpServletResponse httpServletResponse) throws IOException {
+    public Boolean logout() {
         httpSession.invalidate();
-        httpServletResponse.sendRedirect("/");
+        return true;
     }
 
     @ApiOperation(value = "로그인 유무", notes = "로그인 한 경우, true 반환 | 로그인 하지 않은 경우, false 반환")
     @GetMapping("/user/status")
-    public Boolean getUserStatus() {
-        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
-        if (sessionUser != null) {
+    public Boolean getUserStatus(@LoginUser SessionUser user) {
+        if (user != null) {
             return true;
         } else {
             return false;
