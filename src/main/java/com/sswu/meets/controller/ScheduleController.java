@@ -2,6 +2,7 @@ package com.sswu.meets.controller;
 
 import com.mysql.cj.Session;
 import com.sswu.meets.config.auth.dto.SessionUser;
+import com.sswu.meets.domain.schedule.Schedule;
 import com.sswu.meets.dto.*;
 import com.sswu.meets.service.ScheduleService;
 import io.swagger.annotations.Api;
@@ -19,7 +20,6 @@ import java.util.List;
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
-    private final HttpSession httpSession;
 
     @ApiOperation(value = "모임에 고정 일정 등록")
     @ApiImplicitParam(name = "meetingNo", value = "모임 번호")
@@ -35,6 +35,13 @@ public class ScheduleController {
         return scheduleService.saveTuneDate(meetingNo, tuneRequestDto);
     }
 
+    @ApiOperation(value = "일정에 참여하는 유저 조회")
+    @ApiImplicitParam(name = "scheduleNo", value = "일정 번호")
+    @GetMapping("/schedule/userlist/{scheduleNo}")
+    public List<UserResponseDto> getUserListOfSchedule(@PathVariable Long scheduleNo) {
+        return scheduleService.getUserListOfSchedule(scheduleNo);
+    }
+
     @ApiOperation(value = "모임 일정 조회")
     @ApiImplicitParam(name = "meetingNo", value = "모임 번호")
     @GetMapping("/schedule/meeting/{meetingNo}")
@@ -47,13 +54,6 @@ public class ScheduleController {
     @GetMapping("/schedule/{scheduleNo}")
     public List<ScheduleResponseDto> getSchedule(@PathVariable Long scheduleNo) {
         return scheduleService.getSchedule(scheduleNo);
-    }
-
-    @ApiOperation(value = "유저가 참여하고 있는 일정 조회")
-    @GetMapping("/schedule/user")
-    public List<ScheduleResponseDto> getScheduleListOfUser() {
-        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
-        return scheduleService.getScheduleListOfUser(sessionUser.getUserNo());
     }
 
     @ApiOperation(value = "일정 수정", notes = "현재는 이름만 수정 가능 (todo도 수정 가능하도록 업데이트 예정)")

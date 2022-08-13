@@ -23,7 +23,7 @@ public class Schedule {
     @JoinColumn(name = "meeting_no")
     private Meeting meeting;
 
-    @OneToMany(mappedBy = "schedule")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "schedule")
     private List<Attendance> attendanceList = new ArrayList<>();
 
     private String scheduleName;

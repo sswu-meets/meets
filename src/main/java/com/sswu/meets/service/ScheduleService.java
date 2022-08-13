@@ -1,8 +1,10 @@
 package com.sswu.meets.service;
 
+import com.sswu.meets.domain.attendance.Attendance;
 import com.sswu.meets.domain.attendance.AttendanceRepository;
 import com.sswu.meets.domain.meeting.Meeting;
 import com.sswu.meets.domain.meeting.MeetingRepository;
+import com.sswu.meets.domain.participation.ParticipationRepository;
 import com.sswu.meets.domain.schedule.Schedule;
 import com.sswu.meets.domain.schedule.ScheduleRepository;
 import com.sswu.meets.domain.user.User;
@@ -53,6 +55,15 @@ public class ScheduleService {
         return scheduleNo;
     }
 
+    // 일정에 참여하는 유저 조회
+    public List<UserResponseDto> getUserListOfSchedule(Long scheduleNo) {
+        Schedule schedule = scheduleRepository.getById(scheduleNo);
+        return attendanceRepository.findAttendanceBySchedule(schedule).stream()
+                .map(p -> p.getUser())
+                .map(UserResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
     // 모임에 속한 일정 조회
     @Transactional
     public List<ScheduleResponseDto> getScheduleList(Long meetingNo) {
@@ -67,16 +78,6 @@ public class ScheduleService {
     @Transactional
     public List<ScheduleResponseDto> getSchedule(Long scheduleNo) {
         return scheduleRepository.findById(scheduleNo).stream()
-                .map(ScheduleResponseDto::new)
-                .collect(Collectors.toList());
-    }
-
-    // 유저가 참여하고 있는 일정 조회
-    @Transactional
-    public List<ScheduleResponseDto> getScheduleListOfUser(Long user_no) {
-        User scheduleAttendance = userRepository.getById(user_no);
-        return attendanceRepository.findAttendanceByUser(scheduleAttendance).stream()
-                .map(p -> p.getSchedule())
                 .map(ScheduleResponseDto::new)
                 .collect(Collectors.toList());
     }

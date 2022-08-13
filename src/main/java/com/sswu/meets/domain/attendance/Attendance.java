@@ -2,6 +2,7 @@ package com.sswu.meets.domain.attendance;
 
 import com.sswu.meets.domain.schedule.Schedule;
 import com.sswu.meets.domain.user.User;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import java.io.Serializable;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Attendance implements Serializable {
     @Id

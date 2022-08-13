@@ -1,10 +1,7 @@
 package com.sswu.meets.controller;
 
 import com.sswu.meets.config.auth.dto.SessionUser;
-import com.sswu.meets.dto.MeetingResponseDto;
-import com.sswu.meets.dto.UserResponseDto;
-import com.sswu.meets.dto.UserSaveRequestDto;
-import com.sswu.meets.dto.UserUpdateRequestDto;
+import com.sswu.meets.dto.*;
 import com.sswu.meets.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -53,6 +50,13 @@ public class UserController {
         SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
 
         return userService.getMeetingList(sessionUser.getUserNo());
+    }
+
+    @ApiOperation(value = "유저가 참여하고 있는 일정 조회")
+    @GetMapping("/user/schedulelist")
+    public List<ScheduleResponseDto> getScheduleListOfUser() {
+        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
+        return userService.getScheduleList(sessionUser.getUserNo());
     }
 
     @ApiOperation(value = "마이페이지", notes = "\"로그인 한 유저의 경우, 유저 정보 반환 | 로그인 하지 않은 유저의 경우, \"로그인을 먼저 해주세요.\" 안내 메세지 반환")
