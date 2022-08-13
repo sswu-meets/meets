@@ -11,7 +11,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -51,11 +53,11 @@ public class UserController {
 
     @ApiOperation(value = "유저 정보 조회", notes = "\"로그인 한 유저의 경우, 유저 정보 반환 | 로그인 하지 않은 유저의 경우, \"로그인을 먼저 해주세요.\" 안내 메세지 반환")
     @GetMapping("/user")
-    public Object getUserInfo(@LoginUser SessionUser user) {
+    public ResponseEntity getUserInfo(@LoginUser SessionUser user) {
         if (user != null) {
-            return user;
+            return ResponseEntity.status(200).body(user);
         } else {
-            return "로그인을 먼저 해주세요.";
+            return ResponseEntity.status(401).body("SessionUser is null");
         }
     }
 
