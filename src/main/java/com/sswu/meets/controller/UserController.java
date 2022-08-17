@@ -2,6 +2,8 @@ package com.sswu.meets.controller;
 
 import com.sswu.meets.config.auth.LoginUser;
 import com.sswu.meets.config.auth.dto.SessionUser;
+import com.sswu.meets.domain.user.User;
+import com.sswu.meets.domain.user.UserRepository;
 import com.sswu.meets.dto.*;
 import com.sswu.meets.service.UserService;
 import io.swagger.annotations.Api;
@@ -24,6 +26,7 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
     private final HttpSession httpSession;
+    private final UserRepository userRepository;
 
     @ApiOperation(value = "홈 api", notes = "로그인 한 유저의 경우, OO님 환영합니다. | 로그인 하지 않은 유저의 경우, \"meets에 오신 걸 환영합니다:)\"")
     @GetMapping("/")
@@ -48,57 +51,35 @@ public class UserController {
         return userService.getUserList();
     }
 
-<<<<<<< HEAD
     @ApiOperation(value = "유저가 참여하고 있는 모든 모임 조회")
-    @GetMapping("/user/meetinglist")
-    public List<MeetingResponseDto> getMeetingListOfUser() {
-        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
-
-        return userService.getMeetingList(sessionUser.getUserNo());
+    @GetMapping("/user/meetinglist/{user_no}")
+    public List<MeetingResponseDto> getMeetingListOfUser(@PathVariable Long user_no) {
+        return userService.getMeetingList(user_no);
     }
 
     @ApiOperation(value = "유저가 참여하고 있는 일정 조회")
-    @GetMapping("/user/schedulelist")
-    public List<ScheduleResponseDto> getScheduleListOfUser() {
-        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
-        return userService.getScheduleList(sessionUser.getUserNo());
+    @GetMapping("/user/schedulelist/{user_no}")
+    public List<ScheduleResponseDto> getScheduleListOfUser(@PathVariable Long user_no) {
+        return userService.getScheduleList(user_no);
     }
 
-    @ApiOperation(value = "마이페이지", notes = "\"로그인 한 유저의 경우, 유저 정보 반환 | 로그인 하지 않은 유저의 경우, \"로그인을 먼저 해주세요.\" 안내 메세지 반환")
-    @GetMapping("/user/mypage")
-    public Object getUserInfo() {
-        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
-        if (sessionUser != null) {
-            return sessionUser;
-=======
     @ApiOperation(value = "유저 정보 조회", notes = "\"로그인 한 유저의 경우, 유저 정보 반환 | 로그인 하지 않은 유저의 경우, \"로그인을 먼저 해주세요.\" 안내 메세지 반환")
-    @GetMapping("/user")
-    public ResponseEntity getUserInfo(@LoginUser SessionUser user) {
-        if (user != null) {
-            return ResponseEntity.status(200).body(user);
->>>>>>> e759f414b532020bfaf0f72b876fa34e2f9d553b
-        } else {
-            return ResponseEntity.status(401).body("SessionUser is null");
-        }
-    }
-
-    @ApiOperation(value = "유저가 참여하고 있는 모든 모임 조회")
-    @GetMapping("/user/meetinglist")
-    public List<MeetingResponseDto> getMeetingListOfUser(@LoginUser SessionUser user) {
-        return userService.getMeetingList(user.getUserNo());
+    @GetMapping("/user/{user_no}")
+    public List<UserResponseDto> getUserInfo(@PathVariable Long user_no) {
+            return userService.getUser(user_no);
     }
 
     @ApiOperation(value = "유저 정보 수정")
-    @PutMapping("/user")
-    public Boolean update(@LoginUser SessionUser user, @RequestBody UserUpdateRequestDto userSaveRequestDto){
-        return userService.update(user.getUserNo(), userSaveRequestDto);
+    @PutMapping("/user/{user_no}")
+    public Boolean update(@PathVariable Long user_no, @RequestBody UserUpdateRequestDto userSaveRequestDto){
+        return userService.update(user_no, userSaveRequestDto);
     }
 
     @ApiOperation(value = "탈퇴하기")
-    @DeleteMapping("/user")
-    public Boolean deleteUser(@LoginUser SessionUser user) {
+    @DeleteMapping("/user/{user_no}")
+    public Boolean deleteUser(@PathVariable Long user_no) {
         httpSession.invalidate();
-        return userService.deleteUser(user.getUserNo());
+        return userService.deleteUser(user_no);
     }
 
     @ApiOperation(value = "로그인", notes = "구글 로그인 페이지로 이동. 성공시 \"/user/\" url로 이동")
@@ -120,7 +101,8 @@ public class UserController {
 
     @ApiOperation(value = "로그인 유무", notes = "로그인 한 경우, true 반환 | 로그인 하지 않은 경우, false 반환")
     @GetMapping("/user/status")
-    public Boolean getUserStatus(@LoginUser SessionUser user) {
+    public Boolean getUserStatus(@PathVariable Long user_no) {
+        User user = userRepository.getById(user_no);
         if (user != null) {
             return true;
         } else {
