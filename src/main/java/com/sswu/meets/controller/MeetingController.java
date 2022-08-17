@@ -19,7 +19,6 @@ import java.util.List;
 @RestController
 public class MeetingController {
     private final MeetingService meetingService;
-    private final HttpSession httpSession;
 
     @ApiOperation(value = "모임에 참여하고 있는 유저 조회")
     @ApiImplicitParam(name = "meeting_no", value = "모임 아이디(고유 식별 번호)", required = true)
@@ -29,28 +28,22 @@ public class MeetingController {
     }
 
     @ApiOperation(value = "모임 등록")
-    @PostMapping("/meeting")
-    public Long saveMeeting(@RequestBody MeetingSaveRequestDto requestDto) {
-        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
-
-        return meetingService.saveMeeting(sessionUser.getUserNo(), requestDto);
+    @PostMapping("/meeting/{user_no}")
+    public Long saveMeeting(@PathVariable Long user_no, @RequestBody MeetingSaveRequestDto requestDto) {
+        return meetingService.saveMeeting(user_no, requestDto);
     }
 
     @ApiOperation(value = "모임 참여")
-    @PostMapping("/meeting/{meetingCode}")
-    @ApiImplicitParam(name = "meetingCode", value = "미팅 코드", required = true)
-    public MeetingResponseDto participateMeeting(@PathVariable String meetingCode) {
-        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
-
-        return meetingService.participateMeeting(sessionUser.getUserNo(), meetingCode);
+    @PostMapping("/meeting/participate/{meetingCode}/{user_no}")
+    @ApiImplicitParam(name = "meetingCode, user_no", value = "미팅 코드", required = true)
+    public MeetingResponseDto participateMeeting(@PathVariable String meetingCode, Long user_no) {
+        return meetingService.participateMeeting(user_no, meetingCode);
     }
 
     @ApiOperation(value = "모임 나가기")
-    @DeleteMapping("/meeting/{meetingCode}")
-    @ApiImplicitParam(name = "meetingCode", value = "미팅 코드", required = true)
-    public boolean leaveMeeting(@PathVariable String meetingCode) {
-        SessionUser sessionUser = (SessionUser) httpSession.getAttribute("user");
-
-        return meetingService.leaveMeeting(sessionUser.getUserNo(), meetingCode);
+    @DeleteMapping("/meeting/out/{meetingCode}/{user_no}")
+    @ApiImplicitParam(name = "meetingCode, user_no", value = "미팅 코드", required = true)
+    public boolean leaveMeeting(@PathVariable String meetingCode, Long user_no) {
+        return meetingService.leaveMeeting(user_no, meetingCode);
     }
 }
