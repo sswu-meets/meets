@@ -76,4 +76,13 @@ public class UserService {
             return false;
         }
     }
+
+    @Transactional
+    public User login(UserSaveRequestDto requestDto) {
+        User user = userRepository.findByEmail(requestDto.getEmail())
+                .map(entity -> entity.update(requestDto.getName(), requestDto.getProfileUrl()))
+                .orElse(requestDto.toEntity());
+
+        return userRepository.save(user);
+    }
 }

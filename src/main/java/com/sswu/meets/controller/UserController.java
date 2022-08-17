@@ -3,6 +3,7 @@ package com.sswu.meets.controller;
 import com.sswu.meets.config.auth.LoginUser;
 import com.sswu.meets.config.auth.dto.SessionUser;
 import com.sswu.meets.dto.*;
+import com.sswu.meets.domain.user.User;
 import com.sswu.meets.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -10,10 +11,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -92,14 +94,10 @@ public class UserController {
         return userService.deleteUser(user.getUserNo());
     }
 
-    @ApiOperation(value = "로그인", notes = "구글 로그인 페이지로 이동. 성공시 \"/user/\" url로 이동")
-    @GetMapping("/user/login")
-    public void login(HttpServletResponse httpServletResponse){
-        try {
-            httpServletResponse.sendRedirect("/oauth2/authorization/google");
-        } catch (IOException e) {
-            log.error("요청 처리 중 문제가 발생했습니다: {}", e);
-        }
+    @ApiOperation(value = "로그인", notes = "유저 정보 반환")
+    @PostMapping("/user/login")
+    public User login(@Valid @RequestBody UserSaveRequestDto requestDto){
+        return userService.login(requestDto);
     }
 
     @ApiOperation(value = "로그아웃", notes = "로그아웃 후 홈 페이지로 이동")
