@@ -1,9 +1,13 @@
 package com.sswu.meets.service;
 
+import com.sswu.meets.domain.attendance.Attendance;
+import com.sswu.meets.domain.attendance.AttendanceRepository;
 import com.sswu.meets.domain.meeting.Meeting;
 import com.sswu.meets.domain.meeting.MeetingRepository;
+import com.sswu.meets.domain.participation.ParticipationRepository;
 import com.sswu.meets.domain.schedule.Schedule;
 import com.sswu.meets.domain.schedule.ScheduleRepository;
+import com.sswu.meets.domain.user.User;
 import com.sswu.meets.domain.user.UserRepository;
 import com.sswu.meets.dto.*;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +22,8 @@ import java.util.stream.Collectors;
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final MeetingRepository meetingRepository;
+    private final UserRepository userRepository;
+    private final AttendanceRepository attendanceRepository;
     private final ScheduleDateTuneService scheduleDateTuneService;
     private final ScheduleDateFixService scheduleDateFixService;
 
@@ -47,6 +53,15 @@ public class ScheduleService {
         scheduleDateTuneService.saveTuneDate(scheduleNo, dateTuneSaveRequestDto);
 
         return scheduleNo;
+    }
+
+    // 일정에 참여하는 유저 조회
+    public List<UserResponseDto> getUserListOfSchedule(Long scheduleNo) {
+        Schedule schedule = scheduleRepository.getById(scheduleNo);
+        return attendanceRepository.findAttendanceBySchedule(schedule).stream()
+                .map(p -> p.getUser())
+                .map(UserResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     // 모임에 속한 일정 조회

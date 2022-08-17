@@ -1,5 +1,8 @@
 package com.sswu.meets.controller;
 
+import com.mysql.cj.Session;
+import com.sswu.meets.config.auth.dto.SessionUser;
+import com.sswu.meets.domain.schedule.Schedule;
 import com.sswu.meets.dto.*;
 import com.sswu.meets.service.ScheduleService;
 import io.swagger.annotations.Api;
@@ -8,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Api(tags = "일정")
@@ -29,6 +33,13 @@ public class ScheduleController {
     @PostMapping("/schedule/tune/{meetingNo}")
     public Long saveTuneDate(@PathVariable Long meetingNo, @RequestBody TuneScheduleSaveRequestDto tuneRequestDto) {
         return scheduleService.saveTuneDate(meetingNo, tuneRequestDto);
+    }
+
+    @ApiOperation(value = "일정에 참여하는 유저 조회")
+    @ApiImplicitParam(name = "scheduleNo", value = "일정 번호")
+    @GetMapping("/schedule/userlist/{scheduleNo}")
+    public List<UserResponseDto> getUserListOfSchedule(@PathVariable Long scheduleNo) {
+        return scheduleService.getUserListOfSchedule(scheduleNo);
     }
 
     @ApiOperation(value = "모임 일정 조회")

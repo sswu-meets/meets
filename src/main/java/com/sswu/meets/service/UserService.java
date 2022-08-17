@@ -1,12 +1,10 @@
 package com.sswu.meets.service;
 
+import com.sswu.meets.domain.attendance.AttendanceRepository;
 import com.sswu.meets.domain.participation.ParticipationRepository;
 import com.sswu.meets.domain.user.User;
 import com.sswu.meets.domain.user.UserRepository;
-import com.sswu.meets.dto.MeetingResponseDto;
-import com.sswu.meets.dto.UserResponseDto;
-import com.sswu.meets.dto.UserSaveRequestDto;
-import com.sswu.meets.dto.UserUpdateRequestDto;
+import com.sswu.meets.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +17,7 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
     private final ParticipationRepository participationRepository;
+    private final AttendanceRepository attendanceRepository;
 
     @Transactional
     public Long save(UserSaveRequestDto userSaveRequestDto) {
@@ -42,6 +41,16 @@ public class UserService {
         return participationRepository.findParticipationByUser(participationUser).stream()
                 .map(p -> p.getMeeting())
                 .map(MeetingResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    // 유저가 참여하고 있는 일정 조회
+    @Transactional
+    public List<ScheduleResponseDto> getScheduleList(Long user_no) {
+        User userAttendance = userRepository.getById(user_no);
+        return attendanceRepository.findAttendanceByUser(userAttendance).stream()
+                .map(p -> p.getSchedule())
+                .map(ScheduleResponseDto::new)
                 .collect(Collectors.toList());
     }
 

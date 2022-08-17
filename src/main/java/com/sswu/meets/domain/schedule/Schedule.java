@@ -1,11 +1,14 @@
 package com.sswu.meets.domain.schedule;
 
+import com.sswu.meets.domain.attendance.Attendance;
 import com.sswu.meets.domain.meeting.Meeting;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -19,6 +22,9 @@ public class Schedule {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "meeting_no")
     private Meeting meeting;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "schedule")
+    private List<Attendance> attendanceList = new ArrayList<>();
 
     private String scheduleName;
 
