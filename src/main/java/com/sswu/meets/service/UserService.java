@@ -24,6 +24,13 @@ public class UserService {
         return userRepository.save(userSaveRequestDto.toEntity()).getUserNo();
     }
 
+    // 유저 조회
+    @Transactional
+    public User getUser(Long userNo) {
+        return userRepository.findById(userNo)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저는 존재하지 않습니다. scheduleNo=" + userNo));
+    }
+
     // 결과로 넘어온 User의 Stream을 map을 통해 UserResponseDto 변환, 그 후 List로 반환
     @Transactional
     public List<UserResponseDto> getUserList() {
@@ -35,8 +42,8 @@ public class UserService {
 
     // 유저가 참여하고 있는 모임 조회
     @Transactional
-    public List<MeetingResponseDto> getMeetingList(Long user_no) {
-        User participationUser = userRepository.getById(user_no);
+    public List<MeetingResponseDto> getMeetingList(Long userNo) {
+        User participationUser = userRepository.getById(userNo);
 
         return participationRepository.findParticipationByUser(participationUser).stream()
                 .map(p -> p.getMeeting())
@@ -46,8 +53,8 @@ public class UserService {
 
     // 유저가 참여하고 있는 일정 조회
     @Transactional
-    public List<ScheduleResponseDto> getScheduleList(Long user_no) {
-        User userAttendance = userRepository.getById(user_no);
+    public List<ScheduleResponseDto> getScheduleList(Long userNo) {
+        User userAttendance = userRepository.getById(userNo);
         return attendanceRepository.findAttendanceByUser(userAttendance).stream()
                 .map(p -> p.getSchedule())
                 .map(ScheduleResponseDto::new)
@@ -55,7 +62,7 @@ public class UserService {
     }
 
     @Transactional
-    public boolean update(Long user_no, UserUpdateRequestDto userSaveRequestDto) {
+    public boolean update(Long userNo, UserUpdateRequestDto userSaveRequestDto) {
         try{
             userRepository.save(userSaveRequestDto.toEntity());
             return true;
@@ -66,8 +73,8 @@ public class UserService {
     }
 
     @Transactional
-    public boolean deleteUser(Long user_no) {
-        User user = userRepository.getById(user_no);  //getById:프록시만 반환
+    public boolean deleteUser(Long userNo) {
+        User user = userRepository.getById(userNo);  //getById:프록시만 반환
         try {
             userRepository.delete(user);
             return true;
@@ -75,5 +82,14 @@ public class UserService {
             System.out.println("error: " + e);
             return false;
         }
+    }
+
+    @Transactional
+    public User login(UserSaveRequestDto requestDto) {
+        User user = userRepository.findByEmail(requestDto.getEmail())
+                .map(entity -> entity.update(requestDto.getName(), requestDto.getProfileUrl()))
+                .orElse(requestDto.toEntity());
+
+        return userRepository.save(user);
     }
 }

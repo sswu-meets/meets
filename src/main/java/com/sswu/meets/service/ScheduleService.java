@@ -1,13 +1,10 @@
 package com.sswu.meets.service;
 
-import com.sswu.meets.domain.attendance.Attendance;
 import com.sswu.meets.domain.attendance.AttendanceRepository;
 import com.sswu.meets.domain.meeting.Meeting;
 import com.sswu.meets.domain.meeting.MeetingRepository;
-import com.sswu.meets.domain.participation.ParticipationRepository;
 import com.sswu.meets.domain.schedule.Schedule;
 import com.sswu.meets.domain.schedule.ScheduleRepository;
-import com.sswu.meets.domain.user.User;
 import com.sswu.meets.domain.user.UserRepository;
 import com.sswu.meets.dto.*;
 import lombok.RequiredArgsConstructor;
