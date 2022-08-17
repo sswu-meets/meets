@@ -55,6 +55,22 @@ public class ScheduleService {
         return scheduleNo;
     }
 
+    // 일정에 참여하는 유저 등록
+    public UserResponseDto saveUserSchedule(Long user_no, Long scheduleNo) {
+        User userAttendance = userRepository.getById(user_no);
+        Schedule scheduleAttendance = scheduleRepository.getById(scheduleNo);
+
+        if (attendanceRepository.findAttendanceByUserAndSchedule(userAttendance, scheduleAttendance) == null) {
+            Attendance attendance = Attendance.builder()
+                    .user(userAttendance)
+                    .schedule(scheduleAttendance)
+                    .build();
+            attendanceRepository.save(attendance);
+        }
+
+        return new UserResponseDto(userAttendance);
+    }
+
     // 일정에 참여하는 유저 조회
     public List<UserResponseDto> getUserListOfSchedule(Long scheduleNo) {
         Schedule schedule = scheduleRepository.getById(scheduleNo);

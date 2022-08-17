@@ -35,6 +35,13 @@ public class ScheduleController {
         return scheduleService.saveTuneDate(meetingNo, tuneRequestDto);
     }
 
+    @ApiOperation(value = "일정에 참여하는 유저 등록")
+    @ApiImplicitParam(name = "user_no, scheduleNo", value = "유저 번호, 스케줄 번호")
+    @PostMapping("/schedule/{user_no}/{scheduleNo}")
+    public UserResponseDto saveUserSchedule(@PathVariable Long user_no, Long scheduleNo) {
+        return scheduleService.saveUserSchedule(user_no, scheduleNo);
+    }
+
     @ApiOperation(value = "일정에 참여하는 유저 조회")
     @ApiImplicitParam(name = "scheduleNo", value = "일정 번호")
     @GetMapping("/schedule/userlist/{scheduleNo}")
