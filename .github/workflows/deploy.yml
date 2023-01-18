@@ -73,7 +73,7 @@ jobs:
           aws s3 cp \
           --region ap-northeast-2 \
           --acl private \
-          ./$PROJECT_NAME.zip s3://$PROJECT_NAME/
+          ./$PROJECT_NAME.zip s3://$BUCKET_NAME/$PROJECT_NAME.zip
 
       # Deploy
       - name: Deploy
