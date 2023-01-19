@@ -7,6 +7,10 @@ echo "> Copy Build file"
 echo "> cp $REPOSITORY/deploy/*.jar $REPOSITORY/"
 cp $REPOSITORY/deploy/*.jar $REPOSITORY/
 
+echo "> Copy property file"
+echo "> cp $REPOSITORY/deploy/application-prod.properties $REPOSITORY/"
+cp $REPOSITORY/deploy/application-prod.properties $REPOSITORY/
+
 echo "> Check current application pid"
 
 CURRENT_PID=$(pgrep -f $PROJECT_NAME)
@@ -34,6 +38,6 @@ chmod +x $JAR_NAME
 echo "> Run $JAR_NAME"
 
 nohup java -jar \
-        -Dspring.config.location=/home/ec2-user/app/application.properties, classpath:/application-prod.properties \
+        -Dspring.config.location=/home/ec2-user/app/application.properties, /home/ec2-user/app/application.properties \
         -Dspring.profiles.active=prod \
         $JAR_NAME > $REPOSITORY/nohup.out 2>&1 &

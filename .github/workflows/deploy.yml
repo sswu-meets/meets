@@ -52,6 +52,14 @@ jobs:
       - name: Make Directory for deliver
         run: mkdir deploy
 
+      # application-prod.properties 파일 만들기2
+      - name: make application-prod.properties
+        run: |
+          cd ./deploy
+          touch application-prod.properties
+          echo "${{ secrets.PROPERTIES }}" > ./application-prod.properties
+        shell: bash
+
       # 스크립트 파일 복사
       - name: Copy shell
         run: cp ./scripts/* ./deploy/
