@@ -5,7 +5,7 @@ PROJECT_NAME=meets
 
 echo "> Copy Build file"
 echo "> cp $REPOSITORY/deploy/*.jar $REPOSITORY/"
-cp $REPOSITORY/deloy/*.jar $REPOSITORY/
+cp $REPOSITORY/deploy/*.jar $REPOSITORY/
 
 echo "> Check current application pid"
 
