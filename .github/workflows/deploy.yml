@@ -31,14 +31,14 @@ jobs:
         with:
           java-version: 11
 
-      # application-prod.properties 파일 만들기
-      - name: make application-prod.properties
-        run: |
-          cd ./src/main/resources
-          touch ./application-prod.properties
-          # GitHub-Actions에서 설정한 값을 application-dev.properties 파일에 쓰기
-          echo "${{ secrets.PROPERTIES }}" > ./application-prod.properties
-        shell: bash
+#      # application-prod.properties 파일 만들기
+#      - name: make application-prod.properties
+#        run: |
+#          cd ./src/main/resources
+#          touch ./application-prod.properties
+#          # GitHub-Actions에서 설정한 값을 application-dev.properties 파일에 쓰기
+#          echo "${{ secrets.PROPERTIES }}" > ./application-prod.properties
+#        shell: bash
 
       # gradlew 파일 실행권한 설정
       - name: Grant execute permission for gradlew
@@ -52,13 +52,13 @@ jobs:
       - name: Make Directory for deliver
         run: mkdir deploy
 
-      # application-prod.properties 파일 만들기2
-      - name: make application-prod.properties
-        run: |
-          cd ./deploy
-          touch application-prod.properties
-          echo "${{ secrets.PROPERTIES }}" > ./application-prod.properties
-        shell: bash
+#      # application-prod.properties 파일 만들기2
+#      - name: make application-prod.properties
+#        run: |
+#          cd ./deploy
+#          touch application-prod.properties
+#          echo "${{ secrets.PROPERTIES }}" > ./application-prod.properties
+#        shell: bash
 
       # 스크립트 파일 복사
       - name: Copy shell

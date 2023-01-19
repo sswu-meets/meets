@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 REPOSITORY=/home/ec2-user/app
 PROJECT_NAME=meets
