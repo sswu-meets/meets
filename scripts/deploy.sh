@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-REPOSITORY=/home/ec2-user/app/deploy
+REPOSITORY=/home/ec2-user/app
 PROJECT_NAME=meets
 
-#echo "> Build 파일 복사"
-#cp $REPOSITORY/*.jar
+echo "> Build 파일 복사"
+echo "> cp $REPOSITORY/deploy/*.jar $REPOSITORY/"
 
 echo "> 현재 구동 중인 애플리케이션 pid 확인"
 
@@ -34,5 +34,5 @@ echo "> JAR_NAME 실행"
 
 nohup java -jar \
         -Dspring.config.location=/home/ec2-user/app/application.properties, classpath:/application-prod.properties \
-        -Dspring.profiled.active=prod \
+        -Dspring.profiles.active=prod \
         $JAR_NAME > $REPOSITORY/nohup.out 2>&1 &
