@@ -38,6 +38,5 @@ chmod +x $JAR_NAME
 echo "> Run $JAR_NAME"
 
 nohup java -jar \
-        -Dspring.config.location=/home/ec2-user/app/application.properties, /home/ec2-user/app/application.properties \
-        -Dspring.profiles.active=prod \
+        -Dspring.config.location=/home/ec2-user/app/application.properties \
         $JAR_NAME > $REPOSITORY/nohup.out 2>&1 &
