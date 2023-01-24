@@ -93,8 +93,8 @@ public class UserController {
 
     @ApiOperation(value = "로그인", notes = "유저 정보 반환")
     @PostMapping("/user/login")
-    public User login(@Valid @RequestBody UserSaveRequestDto requestDto){
-        return userService.login(requestDto);
+    public User login(@Valid @RequestBody GoogleLoginRequestDto googleLoginRequestDto){
+        return userService.login(googleLoginRequestDto);
     }
 
     @ApiOperation(value = "로그아웃", notes = "로그아웃 후 홈 페이지로 이동")
