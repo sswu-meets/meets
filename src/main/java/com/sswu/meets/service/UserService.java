@@ -1,5 +1,6 @@
 package com.sswu.meets.service;
 
+import com.sswu.meets.config.auth.dto.SessionUser;
 import com.sswu.meets.domain.attendance.AttendanceRepository;
 import com.sswu.meets.domain.participation.ParticipationRepository;
 import com.sswu.meets.domain.user.User;
@@ -11,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -89,7 +92,7 @@ public class UserService {
     }
 
     @Transactional
-    public User login(GoogleLoginRequestDto googleLoginRequestDto) {
+    public GoogleLoginResponseDto login(GoogleLoginRequestDto googleLoginRequestDto, HttpServletRequest httpServletRequest) {
         URI googleUserInfoUri = UriComponentsBuilder.fromHttpUrl("https://www.googleapis.com/oauth2/v1/userinfo")
                 .queryParam("access_token", googleLoginRequestDto.getAccessToken())
                 .build()
@@ -97,11 +100,10 @@ public class UserService {
 
         GoogleUserInfoResponseDto userInfo = restTemplate.getForObject(googleUserInfoUri, GoogleUserInfoResponseDto.class);
 
-        System.out.println("userInfo.getName() = " + userInfo.getName());
-        System.out.println("userInfo.getEmail() = " + userInfo.getEmail());
-
         User user = saveOrUpdate(userInfo);
-        return user;
+        HttpSession httpSession = httpServletRequest.getSession();
+        httpSession.setAttribute("user", new SessionUser(user));
+        return new GoogleLoginResponseDto(user);
     }
 
     private User saveOrUpdate(GoogleUserInfoResponseDto userInfo) {
