@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
@@ -68,10 +69,9 @@ public class UserController {
             @ApiResponse(code = 200, message = "", response = User.class),
             @ApiResponse(code = 400, message = "해당 유저는 존재하지 않습니다.")
     })
-    @GetMapping("/user/{userNo}")
-    public ResponseEntity getUserInfo(@PathVariable Long userNo) {
+    @GetMapping("/user")
+    public ResponseEntity getUserInfo(@LoginUser SessionUser user) {
         try {
-            User user = userService.getUser(userNo);
             return ResponseEntity.status(200).body(user);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body(e.getMessage());
@@ -80,21 +80,21 @@ public class UserController {
 
     @ApiOperation(value = "유저 정보 수정")
     @PutMapping("/user/{userNo}")
-    public Boolean update(@PathVariable Long userNo, @RequestBody UserUpdateRequestDto userSaveRequestDto){
+    public Boolean update(@PathVariable Long userNo, @RequestBody UserUpdateRequestDto userSaveRequestDto) {
         return userService.update(userNo, userSaveRequestDto);
     }
 
     @ApiOperation(value = "탈퇴하기")
     @DeleteMapping("/user/{userNo}")
-    public Boolean deleteUser(@PathVariable Long userNo) {
+    public Boolean deleteUser(@LoginUser SessionUser user) {
         httpSession.invalidate();
-        return userService.deleteUser(userNo);
+        return userService.deleteUser(user.getUserNo());
     }
 
     @ApiOperation(value = "로그인", notes = "유저 정보 반환")
     @PostMapping("/user/login")
-    public User login(@Valid @RequestBody UserSaveRequestDto requestDto){
-        return userService.login(requestDto);
+    public GoogleLoginResponseDto login(@Valid @RequestBody GoogleLoginRequestDto googleLoginRequestDto, HttpServletRequest httpServletRequest) {
+        return userService.login(googleLoginRequestDto, httpServletRequest);
     }
 
     @ApiOperation(value = "로그아웃", notes = "로그아웃 후 홈 페이지로 이동")
@@ -106,8 +106,7 @@ public class UserController {
 
     @ApiOperation(value = "로그인 유무", notes = "로그인 한 경우, true 반환 | 로그인 하지 않은 경우, false 반환")
     @GetMapping("/user/status")
-    public Boolean getUserStatus(@PathVariable Long userNo) {
-        User user = userRepository.getById(userNo);
+    public Boolean getUserStatus(@LoginUser SessionUser user) {
         if (user != null) {
             return true;
         } else {

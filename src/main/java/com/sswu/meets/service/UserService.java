@@ -1,5 +1,6 @@
 package com.sswu.meets.service;
 
+import com.sswu.meets.config.auth.dto.SessionUser;
 import com.sswu.meets.domain.attendance.AttendanceRepository;
 import com.sswu.meets.domain.participation.ParticipationRepository;
 import com.sswu.meets.domain.user.User;
@@ -8,7 +9,12 @@ import com.sswu.meets.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,6 +24,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final ParticipationRepository participationRepository;
     private final AttendanceRepository attendanceRepository;
+    private RestTemplate restTemplate = new RestTemplate();
 
     @Transactional
     public Long save(UserSaveRequestDto userSaveRequestDto) {
@@ -85,10 +92,24 @@ public class UserService {
     }
 
     @Transactional
-    public User login(UserSaveRequestDto requestDto) {
-        User user = userRepository.findByEmail(requestDto.getEmail())
-                .map(entity -> entity.update(requestDto.getName(), requestDto.getProfileUrl()))
-                .orElse(requestDto.toEntity());
+    public GoogleLoginResponseDto login(GoogleLoginRequestDto googleLoginRequestDto, HttpServletRequest httpServletRequest) {
+        URI googleUserInfoUri = UriComponentsBuilder.fromHttpUrl("https://www.googleapis.com/oauth2/v1/userinfo")
+                .queryParam("access_token", googleLoginRequestDto.getAccessToken())
+                .build()
+                .toUri();
+
+        GoogleUserInfoResponseDto userInfo = restTemplate.getForObject(googleUserInfoUri, GoogleUserInfoResponseDto.class);
+
+        User user = saveOrUpdate(userInfo);
+        HttpSession httpSession = httpServletRequest.getSession();
+        httpSession.setAttribute("user", new SessionUser(user));
+        return new GoogleLoginResponseDto(user);
+    }
+
+    private User saveOrUpdate(GoogleUserInfoResponseDto userInfo) {
+        User user = userRepository.findByEmail(userInfo.getEmail())
+                .map(entity -> entity.update(userInfo.getName(), userInfo.getPicture()))
+                .orElse(userInfo.toEntity());
 
         return userRepository.save(user);
     }
