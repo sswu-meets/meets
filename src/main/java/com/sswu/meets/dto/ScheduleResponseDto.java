@@ -13,7 +13,7 @@ public class ScheduleResponseDto {
 
     public ScheduleResponseDto(Schedule entity){
         this.no = entity.getScheduleNo();
-        this.meetingNo = entity.getMeeting().getMeeting_no();
+        this.meetingNo = entity.getMeeting() != null ? entity.getMeeting().getMeeting_no() : null;
         this.scheduleName = entity.getScheduleName();
         this.dateTuneState = entity.getDateTuneState();
         this.placeTuneState = entity.getPlaceTuneState();
