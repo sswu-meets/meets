@@ -10,6 +10,7 @@ import com.sswu.meets.dto.MeetingResponseDto;
 import com.sswu.meets.dto.MeetingSaveRequestDto;
 import com.sswu.meets.dto.UserResponseDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class MeetingService {
@@ -28,8 +30,6 @@ public class MeetingService {
     @Transactional
     public List<UserResponseDto> getUserListOfMeeting(Long meeting_no) {
         Meeting participationMeeting = meetingRepository.getById(meeting_no);
-
-        System.out.println("참여하고 있는 모임: " + participationMeeting.getName());
 
         return participationRepository.findParticipationByMeeting(participationMeeting).stream()
                 .map(p -> p.getUser())
@@ -86,7 +86,7 @@ public class MeetingService {
             participationRepository.delete(participation);
             return true;
         } catch (Exception e) {
-            System.out.println("error: " + e);
+            log.error("error: {}", e.getMessage());
             return false;
         }
     }

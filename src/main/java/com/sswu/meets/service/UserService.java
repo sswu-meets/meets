@@ -7,6 +7,7 @@ import com.sswu.meets.domain.user.User;
 import com.sswu.meets.domain.user.UserRepository;
 import com.sswu.meets.dto.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -18,6 +19,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserService {
@@ -60,9 +62,8 @@ public class UserService {
 
     // 유저가 참여하고 있는 일정 조회
     @Transactional
-    public List<ScheduleResponseDto> getScheduleList(Long userNo) {
-        User userAttendance = userRepository.getById(userNo);
-        return attendanceRepository.findAttendanceByUser(userAttendance).stream()
+    public List<ScheduleResponseDto> getScheduleList(SessionUser sessionUser) {
+        return attendanceRepository.findAttendanceByUser(userRepository.getById(sessionUser.getUserNo())).stream()
                 .map(p -> p.getSchedule())
                 .map(ScheduleResponseDto::new)
                 .collect(Collectors.toList());
@@ -74,19 +75,18 @@ public class UserService {
             userRepository.save(userSaveRequestDto.toEntity());
             return true;
         }catch (IllegalArgumentException e){
-            System.out.println("error: " + e);
+            log.error("error: {}", e.getMessage());
             return false;
         }
     }
 
     @Transactional
-    public boolean deleteUser(Long userNo) {
-        User user = userRepository.getById(userNo);  //getById:프록시만 반환
+    public boolean deleteUser(SessionUser sessionUser) {
         try {
-            userRepository.delete(user);
+            userRepository.delete(userRepository.getById(sessionUser.getUserNo()));
             return true;
         } catch (Exception e) {
-            System.out.println("error: " + e);
+            log.error("error: {}", e.getMessage());
             return false;
         }
     }

@@ -2,6 +2,7 @@ package com.sswu.meets.dto;
 
 import com.sswu.meets.domain.meeting.Meeting;
 import com.sswu.meets.domain.schedule.Schedule;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,11 +10,14 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.OptionalLong;
 
 @Getter
 @NoArgsConstructor
 public class TuneScheduleSaveRequestDto {
     private String scheduleName;
+    @ApiModelProperty(example = "4")
+    private OptionalLong meetingNo = OptionalLong.empty();
     private Boolean placeTuneState;
     private String startDate;
     private String endDate;
@@ -21,8 +25,9 @@ public class TuneScheduleSaveRequestDto {
     private String endTime;
 
     @Builder
-    public TuneScheduleSaveRequestDto(String scheduleName,Boolean placeTuneState, String startDate, String endDate, String startTime, String endTime) {
+    public TuneScheduleSaveRequestDto(String scheduleName, Long meetingNo, Boolean placeTuneState, String startDate, String endDate, String startTime, String endTime) {
         this.scheduleName = scheduleName;
+        this.meetingNo = OptionalLong.of(meetingNo);
         this.placeTuneState = placeTuneState;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -31,7 +36,6 @@ public class TuneScheduleSaveRequestDto {
     }
 
     public Schedule toEntity(Meeting meeting) {
-        System.out.println("ScheduleSaveRequestDto.toEntity()");
         return Schedule.builder()
                 .meeting(meeting)
                 .scheduleName(scheduleName)
@@ -48,8 +52,6 @@ public class TuneScheduleSaveRequestDto {
         LocalDate endDate = LocalDate.parse(this.endDate, dateFormatter);
         LocalTime startTime = LocalTime.parse(this.startTime, timeFormat);
         LocalTime endTime = LocalTime.parse(this.endTime, timeFormat);
-        System.out.println("시작일: " + startDate);
-        System.out.println("종료일: " + endDate);
 
         return ScheduleDateTuneSaveRequestDto.builder()
                 .startDate(startDate)

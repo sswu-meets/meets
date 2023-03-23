@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
@@ -22,6 +23,8 @@ public class Schedule {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "meeting_no")
     private Meeting meeting;
+
+    private String scheduleCode = UUID.randomUUID().toString().substring(0, 8);
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "schedule")
     private List<Attendance> attendanceList = new ArrayList<>();

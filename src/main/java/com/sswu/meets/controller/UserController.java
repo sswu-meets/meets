@@ -31,9 +31,9 @@ public class UserController {
 
     @ApiOperation(value = "홈 api", notes = "로그인 한 유저의 경우, OO님 환영합니다. | 로그인 하지 않은 유저의 경우, \"meets에 오신 걸 환영합니다:)\"")
     @GetMapping("/")
-    public String hello(@LoginUser SessionUser user) {
-        if (user != null) {
-            String userName = user.getName();
+    public String hello(@LoginUser SessionUser sessionUser) {
+        if (sessionUser != null) {
+            String userName = sessionUser.getName();
             return userName + "님 환영합니다.";
         } else {
             return "meets에 오신 걸 환영합니다:)";
@@ -59,9 +59,9 @@ public class UserController {
     }
 
     @ApiOperation(value = "유저가 참여하고 있는 일정 조회")
-    @GetMapping("/user/schedulelist/{userNo}")
-    public List<ScheduleResponseDto> getScheduleListOfUser(@PathVariable Long userNo) {
-        return userService.getScheduleList(userNo);
+    @GetMapping("/user/schedulelist")
+    public List<ScheduleResponseDto> getScheduleListOfUser(@LoginUser SessionUser sessionUser) {
+        return userService.getScheduleList(sessionUser);
     }
 
     @ApiOperation(value = "유저 정보 조회", notes = "넘겨준 유저 고유 번호에 해당하는 유저가 없을 때는 에러 메세지 반환")
@@ -70,9 +70,9 @@ public class UserController {
             @ApiResponse(code = 400, message = "해당 유저는 존재하지 않습니다.")
     })
     @GetMapping("/user")
-    public ResponseEntity getUserInfo(@LoginUser SessionUser user) {
+    public ResponseEntity getUserInfo(@LoginUser SessionUser sessionUser) {
         try {
-            return ResponseEntity.status(200).body(user);
+            return ResponseEntity.status(200).body(sessionUser);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body(e.getMessage());
         }
@@ -86,9 +86,9 @@ public class UserController {
 
     @ApiOperation(value = "탈퇴하기")
     @DeleteMapping("/user/{userNo}")
-    public Boolean deleteUser(@LoginUser SessionUser user) {
+    public Boolean deleteUser(@LoginUser SessionUser sessionUser) {
         httpSession.invalidate();
-        return userService.deleteUser(user.getUserNo());
+        return userService.deleteUser(sessionUser);
     }
 
     @ApiOperation(value = "로그인", notes = "유저 정보 반환")
@@ -106,8 +106,8 @@ public class UserController {
 
     @ApiOperation(value = "로그인 유무", notes = "로그인 한 경우, true 반환 | 로그인 하지 않은 경우, false 반환")
     @GetMapping("/user/status")
-    public Boolean getUserStatus(@LoginUser SessionUser user) {
-        if (user != null) {
+    public Boolean getUserStatus(@LoginUser SessionUser sessionUser) {
+        if (sessionUser != null) {
             return true;
         } else {
             return false;

@@ -1,19 +1,19 @@
 package com.sswu.meets.service;
 
-import com.sswu.meets.domain.meeting.Meeting;
 import com.sswu.meets.domain.schedule.Schedule;
 import com.sswu.meets.domain.schedule.ScheduleRepository;
 import com.sswu.meets.domain.todo.Todo;
 import com.sswu.meets.domain.todo.TodoRepository;
 import com.sswu.meets.dto.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class TodoService {
@@ -45,7 +45,7 @@ public class TodoService {
             todoRepository.delete(todo);
             return true;
         } catch (Exception e) {
-            System.out.println("error: " + e);
+            log.error("error: {}", e.getMessage());
             return false;
         }
     }

@@ -1,5 +1,7 @@
 package com.sswu.meets.service;
 
+import com.sswu.meets.config.auth.dto.SessionUser;
+import com.sswu.meets.domain.attendance.Attendance;
 import com.sswu.meets.domain.attendance.AttendanceRepository;
 import com.sswu.meets.domain.meeting.Meeting;
 import com.sswu.meets.domain.meeting.MeetingRepository;
@@ -18,36 +20,44 @@ import java.util.stream.Collectors;
 @Service
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
-    private final MeetingRepository meetingRepository;
     private final UserRepository userRepository;
+    private final MeetingRepository meetingRepository;
     private final AttendanceRepository attendanceRepository;
     private final ScheduleDateTuneService scheduleDateTuneService;
     private final ScheduleDateFixService scheduleDateFixService;
 
     // 고정 일정 등록
     @Transactional
-    public Long saveFixDate(Long meetingNo, FixScheduleSaveRequestDto fixRequestDto) {
-        Meeting meeting = meetingRepository.getById(meetingNo);
-
-        Long scheduleNo = scheduleRepository.save(fixRequestDto.toEntity(meeting)).getScheduleNo();
-
+    public Long saveFixDate(SessionUser sessionUser, FixScheduleSaveRequestDto fixRequestDto) {
+        Meeting meeting = fixRequestDto.getMeetingNo().isPresent()
+                ? meetingRepository.getById(fixRequestDto.getMeetingNo().getAsLong())
+                : null;
+        Schedule schedule = fixRequestDto.toEntity(meeting);
+        Long scheduleNo = scheduleRepository.save(schedule).getScheduleNo();
         ScheduleDateFixSaveRequestDto dateFixSaveRequestDto = fixRequestDto.changeFormat();
-
         scheduleDateFixService.saveFixDate(scheduleNo, dateFixSaveRequestDto);
+        attendanceRepository.save(Attendance.builder()
+                .schedule(schedule)
+                .user(userRepository.getById(sessionUser.getUserNo()))
+                .build());
 
         return scheduleNo;
     }
 
     //  조율 일정 등록
     @Transactional
-    public Long saveTuneDate(Long meetingNo, TuneScheduleSaveRequestDto tuneRequestDto) {
-        Meeting meeting = meetingRepository.getById(meetingNo);
-
-        Long scheduleNo = scheduleRepository.save(tuneRequestDto.toEntity(meeting)).getScheduleNo();
-
+    public Long saveTuneDate(SessionUser sessionUser, TuneScheduleSaveRequestDto tuneRequestDto) {
+        Meeting meeting = tuneRequestDto.getMeetingNo().isPresent()
+                ? meetingRepository.getById(tuneRequestDto.getMeetingNo().getAsLong())
+                : null;
+        Schedule schedule = tuneRequestDto.toEntity(meeting);
+        Long scheduleNo = scheduleRepository.save(schedule).getScheduleNo();
         ScheduleDateTuneSaveRequestDto dateTuneSaveRequestDto = tuneRequestDto.changeFormat();
-
         scheduleDateTuneService.saveTuneDate(scheduleNo, dateTuneSaveRequestDto);
+        attendanceRepository.save(Attendance.builder()
+                        .schedule(schedule)
+                        .user(userRepository.getById(sessionUser.getUserNo()))
+                        .build());
 
         return scheduleNo;
     }
@@ -71,19 +81,21 @@ public class ScheduleService {
                 .collect(Collectors.toList());
     }
 
-    // 특정 일정 조회
+    // 일정 상세 조회
     @Transactional
-    public List<ScheduleResponseDto> getSchedule(Long scheduleNo) {
-        return scheduleRepository.findById(scheduleNo).stream()
+    public ScheduleResponseDto getSchedule(Long scheduleNo, String scheduleCode) {
+        return scheduleRepository.findByScheduleNoAndScheduleCode(scheduleNo, scheduleCode)
                 .map(ScheduleResponseDto::new)
-                .collect(Collectors.toList());
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "해당 일정은 존재하지 않습니다. scheduleNo: " + scheduleNo + ", scheduleCode: " + scheduleCode
+                ));
     }
 
     // 일정 수정
     @Transactional
     public Boolean update(Long scheduleNo, ScheduleUpdateRequestDto scheduleUpdateRequestDto) {
         Schedule schedule = scheduleRepository.findById(scheduleNo)
-                .orElseThrow(() -> new IllegalArgumentException("해당 일정은 존재하지 않습니. scheduleNo=" + scheduleNo));
+                .orElseThrow(() -> new IllegalArgumentException("해당 일정은 존재하지 않습니다. scheduleNo: " + scheduleNo));
         schedule.update(scheduleUpdateRequestDto.getScheduleName());
 
         return true;
@@ -92,7 +104,7 @@ public class ScheduleService {
     // 일정 삭제
     public Boolean delete(Long scheduleNo) {
         Schedule schedule = scheduleRepository.findById(scheduleNo)
-                .orElseThrow(() -> new IllegalArgumentException("해당 일정은 존재하지 않습니다. scheduleNo=" + scheduleNo));
+                .orElseThrow(() -> new IllegalArgumentException("해당 일정은 존재하지 않습니다. scheduleNo: " + scheduleNo));
         scheduleRepository.delete(schedule);
 
         return true;
