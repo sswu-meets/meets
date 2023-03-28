@@ -12,8 +12,8 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequiredArgsConstructor
 @RestController
 public class HelloController {
-    @Value("${spring.jpa.database}")
-    private String databaseName;
+    @Value("${web.origin}")
+    private String host;
 
     @GetMapping("/hello")
     public String helloTest() {
@@ -22,6 +22,6 @@ public class HelloController {
 
     @GetMapping("/hello/test")
     public String applicationPropertyTest() {
-        return databaseName;
+        return host;
     }
 }
