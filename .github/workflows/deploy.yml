@@ -31,6 +31,10 @@ jobs:
         with:
           java-version: 11
 
+      # 프로퍼티 파일을 담을 디렉토리 생성
+      - name: Make Directory for properties files
+        run: mkdir -p ./src/main/resources
+
       # application.properties 파일 만들기
       - name: make application.properties
         run: |
