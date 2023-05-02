@@ -36,7 +36,7 @@ public class ScheduleController {
     @ApiImplicitParam(name = "scheduleNo", value = "일정 번호")
     @GetMapping("/schedule/userlist/{scheduleNo}")
     public List<UserResponseDto> getUserListOfSchedule(@PathVariable Long scheduleNo) {
-        return scheduleService.getUserListOfSchedule(scheduleNo);
+        return scheduleService.getUserListByScheduleNo(scheduleNo);
     }
 
     @ApiOperation(value = "모임 일정 조회")

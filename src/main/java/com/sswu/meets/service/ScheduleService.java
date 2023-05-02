@@ -63,7 +63,14 @@ public class ScheduleService {
     }
 
     // 일정에 참여하는 유저 조회
-    public List<UserResponseDto> getUserListOfSchedule(Long scheduleNo) {
+    public List<String> getUserNameListBySchedule(Schedule schedule) {
+        return attendanceRepository.findAttendanceBySchedule(schedule).stream()
+                .map(p -> p.getUser().getName())
+                .collect(Collectors.toList());
+    }
+
+    // 일정 번호로 일정에 참여하는 유저 조회
+    public List<UserResponseDto> getUserListByScheduleNo(Long scheduleNo) {
         Schedule schedule = scheduleRepository.getById(scheduleNo);
         return attendanceRepository.findAttendanceBySchedule(schedule).stream()
                 .map(p -> p.getUser())
