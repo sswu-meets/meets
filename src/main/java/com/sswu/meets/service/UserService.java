@@ -6,6 +6,7 @@ import com.sswu.meets.domain.participation.ParticipationRepository;
 import com.sswu.meets.domain.user.User;
 import com.sswu.meets.domain.user.UserRepository;
 import com.sswu.meets.dto.*;
+import com.sswu.meets.dto.schedule.response.ScheduleResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final ScheduleService scheduleService;
     private final ParticipationRepository participationRepository;
     private final AttendanceRepository attendanceRepository;
     private RestTemplate restTemplate = new RestTemplate();
@@ -61,20 +63,21 @@ public class UserService {
     }
 
     // 유저가 참여하고 있는 일정 조회
+    // 해당 일정에 참여하고 있는 모든 유저 조회
     @Transactional
     public List<ScheduleResponseDto> getScheduleList(SessionUser sessionUser) {
-        return attendanceRepository.findAttendanceByUser(userRepository.getById(sessionUser.getUserNo())).stream()
-                .map(p -> p.getSchedule())
-                .map(ScheduleResponseDto::new)
+        User user = userRepository.getById(sessionUser.getUserNo());
+        return attendanceRepository.findAttendanceByUser(user).stream()
+                .map(a -> scheduleService.getSchedule(a.getSchedule()))
                 .collect(Collectors.toList());
     }
 
     @Transactional
     public boolean update(Long userNo, UserUpdateRequestDto userSaveRequestDto) {
-        try{
+        try {
             userRepository.save(userSaveRequestDto.toEntity());
             return true;
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             log.error("error: {}", e.getMessage());
             return false;
         }
