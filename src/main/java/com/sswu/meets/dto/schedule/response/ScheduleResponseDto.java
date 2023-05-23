@@ -44,4 +44,5 @@ public class ScheduleResponseDto {
                 .map(a -> a.getUser().getName())
                 .collect(Collectors.toList());
     }
+
 }
