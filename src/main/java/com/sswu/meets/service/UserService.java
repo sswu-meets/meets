@@ -6,6 +6,7 @@ import com.sswu.meets.domain.participation.ParticipationRepository;
 import com.sswu.meets.domain.user.User;
 import com.sswu.meets.domain.user.UserRepository;
 import com.sswu.meets.dto.*;
+import com.sswu.meets.dto.schedule.response.ScheduleResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -65,12 +66,9 @@ public class UserService {
     // 해당 일정에 참여하고 있는 모든 유저 조회
     @Transactional
     public List<ScheduleResponseDto> getScheduleList(SessionUser sessionUser) {
-        return attendanceRepository.findAttendanceByUser(userRepository.getById(sessionUser.getUserNo())).stream()
-                .map(p -> new ScheduleResponseDto(
-                                p.getSchedule(),
-                                scheduleService.getUserNameListBySchedule(p.getSchedule())
-                        )
-                )
+        User user = userRepository.getById(sessionUser.getUserNo());
+        return attendanceRepository.findAttendanceByUser(user).stream()
+                .map(a -> scheduleService.getSchedule(a.getSchedule()))
                 .collect(Collectors.toList());
     }
 
