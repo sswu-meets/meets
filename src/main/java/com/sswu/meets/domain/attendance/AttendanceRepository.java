@@ -13,7 +13,7 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
             + "from Attendance a "
             + "join fetch a.schedule "
             + "where a.user = :user ")
-    List<Attendance> findAttendanceByUser (@Param("user") User user);
+    List<Attendance> findAttendanceByUser(@Param("user") User user);
 
-    List<Attendance> findAttendanceBySchedule (Schedule schedule);
+    List<Attendance> findAttendanceBySchedule(Schedule schedule);
 }
