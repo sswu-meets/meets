@@ -5,13 +5,18 @@ import com.sswu.meets.domain.attendance.Attendance;
 import com.sswu.meets.domain.attendance.AttendanceRepository;
 import com.sswu.meets.domain.meeting.Meeting;
 import com.sswu.meets.domain.meeting.MeetingRepository;
+import com.sswu.meets.domain.schedule.DateTuneType;
 import com.sswu.meets.domain.schedule.Schedule;
 import com.sswu.meets.domain.schedule.ScheduleRepository;
 import com.sswu.meets.domain.scheduleDateFix.ScheduleDateFix;
 import com.sswu.meets.domain.scheduleDateFix.ScheduleDateFixRepository;
 import com.sswu.meets.domain.scheduleDateTune.ScheduleDateTuneRepository;
 import com.sswu.meets.domain.user.UserRepository;
-import com.sswu.meets.dto.*;
+import com.sswu.meets.dto.UserResponseDto;
+import com.sswu.meets.dto.schedule.request.FixScheduleSaveRequestDto;
+import com.sswu.meets.dto.schedule.request.ScheduleDateTuneSaveRequestDto;
+import com.sswu.meets.dto.schedule.request.ScheduleUpdateRequestDto;
+import com.sswu.meets.dto.schedule.request.TuneRangeScheduleSaveRequestDto;
 import com.sswu.meets.dto.schedule.response.ScheduleResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,8 +33,6 @@ public class ScheduleService {
     private final UserRepository userRepository;
     private final MeetingRepository meetingRepository;
     private final AttendanceRepository attendanceRepository;
-    private final ScheduleDateTuneService scheduleDateTuneService;
-    private final ScheduleDateFixService scheduleDateFixService;
     private final ScheduleDateFixRepository scheduleDateFixRepository;
     private final ScheduleDateTuneRepository scheduleDateTuneRepository;
 
@@ -39,34 +42,33 @@ public class ScheduleService {
         Meeting meeting = fixRequestDto.getMeetingNo().isPresent()
                 ? meetingRepository.getById(fixRequestDto.getMeetingNo().getAsLong())
                 : null;
-        Schedule schedule = fixRequestDto.toEntity(meeting);
-        Long scheduleNo = scheduleRepository.save(schedule).getScheduleNo();
-        ScheduleDateFixSaveRequestDto dateFixSaveRequestDto = fixRequestDto.changeFormat();
-        scheduleDateFixService.saveFixDate(scheduleNo, dateFixSaveRequestDto);
+        Schedule schedule = fixRequestDto.toSchedule(meeting, DateTuneType.FIX);
+        scheduleRepository.save(schedule);
+        scheduleDateFixRepository.save(fixRequestDto.toScheduleDateFix(schedule));
         attendanceRepository.save(Attendance.builder()
                 .schedule(schedule)
                 .user(userRepository.getById(sessionUser.getUserNo()))
                 .build());
 
-        return scheduleNo;
+        return schedule.getScheduleNo();
     }
 
-    //  조율 일정 등록
+    //  조율 일정(기간) 등록
     @Transactional
-    public Long saveTuneDate(SessionUser sessionUser, TuneScheduleSaveRequestDto tuneRequestDto) {
+    public Long saveTuneRangeSchedule(SessionUser sessionUser, TuneRangeScheduleSaveRequestDto tuneRequestDto) {
         Meeting meeting = tuneRequestDto.getMeetingNo().isPresent()
                 ? meetingRepository.getById(tuneRequestDto.getMeetingNo().getAsLong())
                 : null;
-        Schedule schedule = tuneRequestDto.toEntity(meeting);
-        Long scheduleNo = scheduleRepository.save(schedule).getScheduleNo();
-        ScheduleDateTuneSaveRequestDto dateTuneSaveRequestDto = tuneRequestDto.changeFormat();
-        scheduleDateTuneService.saveTuneDate(scheduleNo, dateTuneSaveRequestDto);
+        Schedule schedule = tuneRequestDto.toSchedule(meeting, DateTuneType.RANGE);
+        scheduleRepository.save(schedule).getScheduleNo();
+        tuneRequestDto.getStartDate().datesUntil(tuneRequestDto.getEndDate())
+                .forEach(d -> scheduleDateTuneRepository.save(tuneRequestDto.toScheduleDateTune(schedule, d)));
         attendanceRepository.save(Attendance.builder()
                         .schedule(schedule)
                         .user(userRepository.getById(sessionUser.getUserNo()))
                         .build());
 
-        return scheduleNo;
+        return schedule.getScheduleNo();
     }
 
     // 일정에 참여하는 유저 조회

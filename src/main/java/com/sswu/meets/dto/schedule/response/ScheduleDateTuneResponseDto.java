@@ -1,26 +1,19 @@
-package com.sswu.meets.dto;
+package com.sswu.meets.dto.schedule.response;
 
 import com.sswu.meets.domain.scheduleDateTune.ScheduleDateTune;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Getter
 public class ScheduleDateTuneResponseDto {
     private Long scheduleDateTuneNo;
     private Long scheduleNo;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private LocalTime startTime;
-    private LocalTime endTime;
+    private LocalDate tuneDate;
 
     public ScheduleDateTuneResponseDto(ScheduleDateTune entity) {
         this.scheduleDateTuneNo = entity.getScheduleDateTuneNo();
         this.scheduleNo = entity.getSchedule().getScheduleNo();
-        this.startDate = entity.getStartDate();
-        this.endDate = entity.getEndDate();
-        this.startTime = entity.getStartTime();
-        this.endTime = entity.getEndTime();
+        this.tuneDate = entity.getTuneDate();
     }
 }

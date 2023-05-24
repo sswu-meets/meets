@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -30,6 +31,8 @@ public class Schedule {
     private List<Attendance> attendanceList = new ArrayList<>();
 
     private String scheduleName;
+    private LocalTime startTime;
+    private LocalTime endTime;
 
     private Boolean dateTuneState;   // 조율 -> true, 고정 -> false
 
@@ -37,9 +40,18 @@ public class Schedule {
 
 
     @Builder
-    public Schedule(Meeting meeting, String scheduleName, Boolean dateTuneState, Boolean placeTuneState) {
+    public Schedule(
+            Meeting meeting,
+            String scheduleName,
+            LocalTime startTime,
+            LocalTime endTime,
+            Boolean dateTuneState,
+            Boolean placeTuneState
+    ) {
         this.meeting = meeting;
         this.scheduleName = scheduleName;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.dateTuneState = dateTuneState;
         this.placeTuneState = placeTuneState;
     }

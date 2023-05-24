@@ -3,7 +3,7 @@ package com.sswu.meets.service;
 import com.sswu.meets.domain.schedule.Schedule;
 import com.sswu.meets.domain.schedule.ScheduleRepository;
 import com.sswu.meets.domain.scheduleDateFix.ScheduleDateFixRepository;
-import com.sswu.meets.dto.ScheduleDateFixSaveRequestDto;
+import com.sswu.meets.dto.schedule.request.ScheduleDateFixSaveRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +17,6 @@ public class ScheduleDateFixService {
     @Transactional
     public Long saveFixDate(Long scheduleNo, ScheduleDateFixSaveRequestDto requestDto) {
         Schedule schedule = scheduleRepository.getById(scheduleNo);
-        return scheduleDateFixRepository.save(requestDto.toEntity(schedule)).getScheduleDateFixNo();
+        return scheduleDateFixRepository.save(requestDto.toScheduleDateFix(schedule)).getScheduleDateFixNo();
     }
 }

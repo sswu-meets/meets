@@ -3,8 +3,8 @@ package com.sswu.meets.controller;
 import com.sswu.meets.config.auth.LoginUser;
 import com.sswu.meets.config.auth.dto.SessionUser;
 import com.sswu.meets.domain.user.User;
-import com.sswu.meets.domain.user.UserRepository;
 import com.sswu.meets.dto.*;
+import com.sswu.meets.dto.schedule.response.ScheduleResponseDto;
 import com.sswu.meets.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,42 +24,31 @@ import java.util.List;
 @Api(tags = "유저")
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/user")
 public class UserController {
     private final UserService userService;
     private final HttpSession httpSession;
-    private final UserRepository userRepository;
-
-    @ApiOperation(value = "홈 api", notes = "로그인 한 유저의 경우, OO님 환영합니다. | 로그인 하지 않은 유저의 경우, \"meets에 오신 걸 환영합니다:)\"")
-    @GetMapping("/")
-    public String hello(@LoginUser SessionUser sessionUser) {
-        if (sessionUser != null) {
-            String userName = sessionUser.getName();
-            return userName + "님 환영합니다.";
-        } else {
-            return "meets에 오신 걸 환영합니다:)";
-        }
-    }
 
     @ApiOperation(value = "유저 등록", notes = "유저 고유 식별 번호 반환")
-    @PostMapping("/user")
+    @PostMapping("")
     public Long save(@RequestBody UserSaveRequestDto userSaveRequestDto) {
         return userService.save(userSaveRequestDto);
     }
 
     @ApiOperation(value = "모든 유저 정보 조회")
-    @GetMapping("/user/all")
+    @GetMapping("/all")
     public List<UserResponseDto> getUserList() {
         return userService.getUserList();
     }
 
     @ApiOperation(value = "유저가 참여하고 있는 모든 모임 조회")
-    @GetMapping("/user/meetinglist/{userNo}")
+    @GetMapping("/meetinglist/{userNo}")
     public List<MeetingResponseDto> getMeetingListOfUser(@PathVariable Long userNo) {
         return userService.getMeetingList(userNo);
     }
 
     @ApiOperation(value = "유저가 참여하고 있는 일정 조회")
-    @GetMapping("/user/schedulelist")
+    @GetMapping("/schedulelist")
     public List<ScheduleResponseDto> getScheduleListOfUser(@LoginUser SessionUser sessionUser) {
         return userService.getScheduleList(sessionUser);
     }
@@ -79,33 +68,33 @@ public class UserController {
     }
 
     @ApiOperation(value = "유저 정보 수정")
-    @PutMapping("/user/{userNo}")
+    @PutMapping("/{userNo}")
     public Boolean update(@PathVariable Long userNo, @RequestBody UserUpdateRequestDto userSaveRequestDto) {
         return userService.update(userNo, userSaveRequestDto);
     }
 
     @ApiOperation(value = "탈퇴하기")
-    @DeleteMapping("/user/{userNo}")
+    @DeleteMapping("/{userNo}")
     public Boolean deleteUser(@LoginUser SessionUser sessionUser) {
         httpSession.invalidate();
         return userService.deleteUser(sessionUser);
     }
 
     @ApiOperation(value = "로그인", notes = "유저 정보 반환")
-    @PostMapping("/user/login")
+    @PostMapping("/login")
     public GoogleLoginResponseDto login(@Valid @RequestBody GoogleLoginRequestDto googleLoginRequestDto, HttpServletRequest httpServletRequest) {
         return userService.login(googleLoginRequestDto, httpServletRequest);
     }
 
     @ApiOperation(value = "로그아웃", notes = "로그아웃 후 홈 페이지로 이동")
-    @GetMapping("/user/logout")
+    @GetMapping("/logout")
     public Boolean logout() {
         httpSession.invalidate();
         return true;
     }
 
     @ApiOperation(value = "로그인 유무", notes = "로그인 한 경우, true 반환 | 로그인 하지 않은 경우, false 반환")
-    @GetMapping("/user/status")
+    @GetMapping("/status")
     public Boolean getUserStatus(@LoginUser SessionUser sessionUser) {
         if (sessionUser != null) {
             return true;

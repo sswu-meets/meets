@@ -1,4 +1,4 @@
-package com.sswu.meets.dto;
+package com.sswu.meets.dto.schedule.request;
 
 import com.sswu.meets.domain.schedule.Schedule;
 import lombok.Builder;
@@ -15,7 +15,7 @@ public class ScheduleUpdateRequestDto {
         this.scheduleName = scheduleName;
     }
 
-    public Schedule toEntity() {
+    public Schedule toSchedule() {
         return Schedule.builder()
                 .scheduleName(scheduleName)
                 .build();
