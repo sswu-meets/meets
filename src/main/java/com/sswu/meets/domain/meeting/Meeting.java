@@ -26,11 +26,14 @@ public class Meeting {
 
     private String meetingColor;
 
+    private String meetingUrl;
+
     @Builder
-    public Meeting(String name, String meetingCode, String meetingColor) {
+    public Meeting(String name, String meetingCode, String meetingColor, String meetingUrl) {
         this.name = name;
         this.meetingCode = meetingCode;
         this.meetingColor = meetingColor;
+        this.meetingUrl = meetingUrl;
     }
 
 }
